@@ -1,8 +1,9 @@
 import { NotificationsNoneOutlined } from '@mui/icons-material'
-import { AppBar, Avatar, Box, Container, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography } from '@mui/material'
+import { AppBar, Box, Container, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import React from 'react'
+import { Avatar } from './common/Avatar';
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
@@ -29,7 +30,7 @@ const AppHeader = (props: Props) => {
   };
 
   return (
-    <AppBar position="static" sx={{ background: 'white', color: 'black' }}>
+    <AppBar position="static" sx={{ background: 'white', color: 'black', boxShadow: '0px -1px 0px 0px #EEE inset' }}>
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             <Typography
@@ -89,7 +90,7 @@ const AppHeader = (props: Props) => {
               </Box>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar sx={{ background: 'linear-gradient(to bottom, #E19524, #FC6969)' }}>MY</Avatar>
+                  <Avatar sx={{background: 'linear-gradient(to bottom, #E19524, #FC6969)'}}>MY</Avatar>
                 </IconButton>
               </Tooltip>
               <Menu
