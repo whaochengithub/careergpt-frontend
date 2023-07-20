@@ -31,10 +31,65 @@ let theme = createTheme({
     },
   },
   components: {
-    MuiButtonBase: {
-      defaultProps: {
-        disableRipple: true,
+    MuiStepIcon: {
+      styleOverrides: {
+        text: {
+          display: 'none'
+        }
       },
+    },
+    MuiStepConnector: {
+      styleOverrides: {
+        horizontal: {
+          marginLeft: '-17px',
+          marginRight: '-22px',
+        }
+      }
+    },
+    MuiStepLabel: {
+      styleOverrides: {
+        iconContainer: {
+          marginBottom: 10,
+        },
+        horizontal: {
+          flexDirection: 'column',
+          marginTop: 26,
+        }
+      }
+    },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          '&.Mui-selected': {
+            color: 'inherit',
+            fontWeight: 'bold',
+          }
+        },
+      }
+    },
+    MuiTabs: {
+      styleOverrides: {
+        indicator: {
+          height: 4,
+        }
+      }
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          display: 'flex',
+          flexDirection: 'row-reverse',
+          color: '#444444',
+          fontSize: 14,
+          fontStyle: 'normal',
+          fontWeight: 400,
+          lineHeight: '20px',
+        },
+        asterisk: {
+          marginRight: 2,
+          color: 'red',
+        }
+      }
     },
     MuiPaper: {
       styleOverrides: {
@@ -49,6 +104,11 @@ let theme = createTheme({
           color: '#425563',
         }
       }
+    },
+    MuiButtonBase: {
+      defaultProps: {
+        disableRipple: true,
+      },
     },
     MuiButton: {
       styleOverrides: {
