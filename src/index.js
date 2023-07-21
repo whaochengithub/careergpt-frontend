@@ -4,7 +4,13 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
+import RecruiterProfile from './pages/recruiter/Profile';
+import CandidateProfile from './pages/candidate/Profile';
 
 let theme = createTheme({
   typography: {
@@ -20,6 +26,9 @@ let theme = createTheme({
     },
   },
   palette: {
+    background: {
+      default: "#F4F6F9"
+    },
     text: {
       secondary: 'gray'
     },
@@ -31,6 +40,16 @@ let theme = createTheme({
     },
   },
   components: {
+    MuiTypography: {
+      styleOverrides: {
+        subtitle1: {
+          fontSize: 16,
+          color: '#444',
+          fontStyle: 'normal',
+          fontWeight: 600,
+        }
+      }
+    },
     MuiStepIcon: {
       styleOverrides: {
         text: {
@@ -149,12 +168,31 @@ const CutomCheckbox = styled(Checkbox)(({ theme }) => ({
   }
 }));
 
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <h1>Career GPT Dashboard</h1>,
+  },
+  {
+    path: "/showcase",
+    element: <App />,
+  },
+  {
+    path: "/candidate/profile",
+    element: <CandidateProfile />
+  },
+  {
+    path: "/recruiter/profile",
+    element: <RecruiterProfile />
+  }
+]);
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <App />
+      <RouterProvider router={router} />
     </ThemeProvider>
   </React.StrictMode>
 );

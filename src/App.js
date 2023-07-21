@@ -65,6 +65,11 @@ function QontoStepIcon(props) {
   return (
     <QontoStepIconRoot ownerState={{ active }} className={className}>
       {completed ? (
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
+          <circle cx="8.81658" cy="8.72739" r="7.84405" fill="white" />
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M0.972534 8.72739C0.972534 4.39524 4.48443 0.883339 8.81658 0.883339C13.1487 0.883339 16.6606 4.39524 16.6606 8.72739C16.6606 13.0595 13.1487 16.5714 8.81658 16.5714C4.48443 16.5714 0.972534 13.0595 0.972534 8.72739ZM8.81658 2.30953C5.2721 2.30953 2.39872 5.1829 2.39872 8.72739C2.39872 12.2719 5.2721 15.1452 8.81658 15.1452C12.3611 15.1452 15.2344 12.2719 15.2344 8.72739C15.2344 5.1829 12.3611 2.30953 8.81658 2.30953ZM12.2492 6.28948L8.68376 11.2812L8.25953 11.8751L7.67563 11.4372L4.82325 9.29786L5.67896 8.15691L7.94745 9.85827L11.0887 5.46053L12.2492 6.28948Z" fill="#01A982" />
+        </svg>
+      ) : active ? (
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
           <g clip-path="url(#clip0_230_119)">
             <circle cx="9.89374" cy="9.99058" r="9.38437" fill="white" />

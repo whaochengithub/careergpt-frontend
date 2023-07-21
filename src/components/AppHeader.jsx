@@ -85,8 +85,8 @@ const AppHeader = (props: Props) => {
             </Box>
             <Box sx={{ display: 'flex', flexGrow: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
               <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, flexDirection: 'row' }}>
-                <NotificationsNoneOutlined sx={{ m: 1 }} />
-                <SearchOutlinedIcon sx={{ m: 1 }} />
+                <NotificationsNoneOutlined sx={{ mr: 4 }} />
+                <SearchOutlinedIcon sx={{ mr: 4 }} />
               </Box>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
