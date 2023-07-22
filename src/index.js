@@ -11,6 +11,7 @@ import {
 import reportWebVitals from './reportWebVitals';
 import RecruiterProfile from './pages/recruiter/Profile';
 import CandidateProfile from './pages/candidate/Profile';
+import Setting from './pages/Setting';
 
 let theme = createTheme({
   typography: {
@@ -19,8 +20,14 @@ let theme = createTheme({
     subtitle1: {
       fontSize: 12,
     },
+    subtitle2: {
+      color: '#757575',
+      fontFamily: 'Inter',
+      fontSize: 14,
+      fontWeight: 400,
+    },
     body1: {
-      fontWeight: 500,
+      fontWeight: 400,
     },
     button: {
     },
@@ -33,7 +40,7 @@ let theme = createTheme({
       secondary: 'gray'
     },
     primary: {
-      main: '#01A982',
+      main: '#2C5DE5',
     },
     secondary: {
       main: orange[500],
@@ -146,7 +153,7 @@ let theme = createTheme({
               borderRadius: '100px',
               fontWeight: 900,
               padding: '6px 18px',
-              border: '1.706px solid var(--accent-colors-brand, #01A982)',
+              border: `1.706px solid ${theme.palette.primary.main}`,
             }
           }
         },
@@ -184,6 +191,10 @@ const router = createBrowserRouter([
   {
     path: "/recruiter/profile",
     element: <RecruiterProfile />
+  },
+  {
+    path: "/setting",
+    element: <Setting />
   }
 ]);
 

@@ -13,7 +13,7 @@ export const BootstrapInput = styled(InputBase)(({ theme }) => ({
         position: 'relative',
         border: '1px solid',
         borderColor: theme.palette.mode === 'light' ? '#DDD' : '#2D3843',
-        fontSize: 16,
+        fontSize: 12,
         fontWeight: 400,
         color: '#333',
         padding: '8px 13px 8px 12px',
