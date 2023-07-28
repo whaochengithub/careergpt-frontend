@@ -1,8 +1,5 @@
-import React from 'react'
 import InputBase from '@mui/material/InputBase';
 import { alpha, styled } from '@mui/material';
-
-type Props = {}
 
 export const BootstrapInput = styled(InputBase)(({ theme }) => ({
     'label + &': {
@@ -24,7 +21,7 @@ export const BootstrapInput = styled(InputBase)(({ theme }) => ({
         ]),
         // Use the system font instead of the default Roboto font.
         fontFamily: [
-            'MetricHPEXS'
+            'Inter'
         ].join(','),
         '&:focus': {
             boxShadow: `${alpha(theme.palette.primary.main, 0.25)} 0 0 0 0.2rem`,

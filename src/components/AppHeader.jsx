@@ -41,7 +41,7 @@ const AppHeader = (props: Props) => {
               sx={{
                 mr: 2,
                 display: { xs: 'none', md: 'flex' },
-                fontFamily: 'monospace',
+                fontFamily: 'Inter',
                 fontWeight: 700,
                 letterSpacing: '.3rem',
                 color: 'inherit',
@@ -71,7 +71,7 @@ const AppHeader = (props: Props) => {
                 mr: 2,
                 display: { xs: 'flex', md: 'none' },
                 flexGrow: 1,
-                fontFamily: 'monospace',
+                fontFamily: 'Inter',
                 fontWeight: 700,
                 letterSpacing: '.3rem',
                 color: 'inherit',

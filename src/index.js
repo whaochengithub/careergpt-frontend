@@ -2,27 +2,21 @@ import { Checkbox, createTheme, CssBaseline, responsiveFontSizes, styled, ThemeP
 import { orange } from '@mui/material/colors';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
 import './index.css';
 import {
-  createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
-import RecruiterProfile from './pages/recruiter/Profile';
-import CandidateProfile from './pages/candidate/Profile';
-import Setting from './pages/Setting';
+import { router } from './router';
 
 let theme = createTheme({
   typography: {
     fontSize: 12,
-    fontFamily: 'MetricHPEXS',
     subtitle1: {
       fontSize: 12,
     },
     subtitle2: {
       color: '#757575',
-      fontFamily: 'Inter',
       fontSize: 14,
       fontWeight: 400,
     },
@@ -47,6 +41,17 @@ let theme = createTheme({
     },
   },
   components: {
+    MuiRadio: {
+      styleOverrides: {
+        root: {
+          border: '1px solid',
+          borderRadius: 6,
+          padding: '12px 16px',
+          paddingRight: 'calc(100% - 35px)',
+          marginRight: 'calc(46px - 100%)',
+        },
+      }
+    },
     MuiTypography: {
       styleOverrides: {
         subtitle1: {
@@ -139,6 +144,10 @@ let theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: ({ ownerState, theme }) => {
+          const style = {};
+          if (ownerState.shape === 'square') {
+            style.borderRadius = 6;
+          }
           if (ownerState.variant === 'contained') {
             return {
               color: theme.palette.common.white,
@@ -146,6 +155,7 @@ let theme = createTheme({
               boxShadow: 'none',
               fontWeight: 900,
               padding: '6px 18px',
+              ...style
             }
           } else if (ownerState.variant === 'outlined') {
             return {
@@ -154,6 +164,7 @@ let theme = createTheme({
               fontWeight: 900,
               padding: '6px 18px',
               border: `1.706px solid ${theme.palette.primary.main}`,
+              ...style
             }
           }
         },
@@ -174,29 +185,6 @@ const CutomCheckbox = styled(Checkbox)(({ theme }) => ({
     color: theme.status.danger,
   }
 }));
-
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <h1>Career GPT Dashboard</h1>,
-  },
-  {
-    path: "/showcase",
-    element: <App />,
-  },
-  {
-    path: "/candidate/profile",
-    element: <CandidateProfile />
-  },
-  {
-    path: "/recruiter/profile",
-    element: <RecruiterProfile />
-  },
-  {
-    path: "/setting",
-    element: <Setting />
-  }
-]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

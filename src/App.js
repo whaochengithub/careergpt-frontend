@@ -10,7 +10,6 @@ import { Button } from './components/common/Button';
 import { Chip } from './components/common/Chip';
 import { BootstrapInput } from './components/common/BootstrapInput';
 import { Modal } from './components/common/Modal';
-import Check from '@mui/icons-material/Check';
 
 function a11yProps(index) {
   return {
@@ -126,10 +125,6 @@ const App = () => {
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set());
 
-  const isStepOptional = (step) => {
-    return step === 1;
-  };
-
   const isStepSkipped = (step) => {
     return skipped.has(step);
   };
@@ -149,21 +144,6 @@ const App = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const handleSkip = () => {
-    if (!isStepOptional(activeStep)) {
-      // You probably want to guard against something like this,
-      // it should never occur unless someone's actively trying to break something.
-      throw new Error("You can't skip a step that isn't optional.");
-    }
-
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped((prevSkipped) => {
-      const newSkipped = new Set(prevSkipped.values());
-      newSkipped.add(activeStep);
-      return newSkipped;
-    });
-  };
-
   return (
     <Box>
       <AppHeader />
@@ -178,8 +158,11 @@ const App = () => {
       </Drawer>
       <MenuIcon sx={{ m: 2 }} onClick={() => setOpen(true)} />
       <Button sx={{ m: 1 }} title={'Improve with AI'} variant='contained'>Improve with AI</Button>
+      <Button sx={{ m: 1 }} title={'Improve with AI'} variant='contained' shape='square'>Improve with AI</Button>
       <Button sx={{ m: 1 }} title={'Download Resume'} variant='outlined'>Download Resume</Button>
+      <Button sx={{ m: 1 }} title={'Download Resume'} variant='outlined' shape='square'>Download Resume</Button>
       <Button sx={{ m: 1 }} title={'Download Resume'} variant='contained' disabled>Download Resume</Button>
+      <Button sx={{ m: 1 }} title={'Download Resume'} variant='contained' shape='square' disabled>Download Resume</Button>
       <Button sx={{ m: 1 }} title={'Download Resume'} variant='outlined' disabled>Download Resume</Button>
 
       <Paper sx={{ maxWidth: 800, p: 1, m: 1 }}>
@@ -258,8 +241,8 @@ const App = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
         actionButtons={[
-          <Button variant='outlined' onClick={handleBack}>Back</Button>,
-          <Button variant='outlined' onClick={handleNext}>Next</Button>
+          <Button variant='outlined' onClick={handleBack} key={'back'}>Back</Button>,
+          <Button variant='outlined' onClick={handleNext} key={'next'}>Next</Button>
         ]}
       >
         <Box sx={{ width: '100%' }}>
