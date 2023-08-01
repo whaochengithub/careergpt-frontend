@@ -1,19 +1,20 @@
-import { Box, FormControl, Grid, InputLabel, MenuItem, Select, Stack, Typography } from '@mui/material'
+import { Box, FormControl, Grid, InputLabel, MenuItem, Stack, Typography } from '@mui/material'
 import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from 'react'
 import { BootstrapInput } from '../components/common/BootstrapInput'
 import { Button } from '../components/common/Button'
+import Select from 'react-select'
 
 const SignUp = () => {
     const [role, setRole] = useState('candidate');
     const navigate = useNavigate();
-    const handleRoleChange = (e) => {
-        setRole(e.target.value);
+    const handleRoleChange = (value) => {
+        setRole(value);
     };
     const handleSignUp = () => {
-        if (role === 'candidate') {
+        if (role.value === 'candidate') {
             navigate("/candidate/profile");
-        } else if (role === 'recruiter') {
+        } else if (role.value === 'recruiter') {
             navigate("/recruiter/profile");
         } else {
 
@@ -49,15 +50,17 @@ const SignUp = () => {
                         </InputLabel>
                         <BootstrapInput id="siginin-reenter-password" sx={{ width: '100%' }} />
                     </FormControl>
-                    <FormControl variant='standard' sx={{ width: '100%' }}>
-                        <InputLabel shrink htmlFor="signup-password" required>
+                    <FormControl variant='standard' sx={{ width: '100%', marginTop: 2 }}>
+                        <InputLabel sx={{ marginTop: -2 }} shrink htmlFor="signup-password" required>
                             My Role
                         </InputLabel>
-                        <Select label="Role" variant='standard' value={role} onChange={handleRoleChange}>
-                            <MenuItem value={'candidate'}>Candidate</MenuItem>
-                            <MenuItem value={'recruiter'}>Recruiter</MenuItem>
-                            <MenuItem value={'admin'}>Admin</MenuItem>
-                        </Select>
+                        <Select options={
+                            [
+                                { value: 'candidate', label: 'candidate' },
+                                { value: 'recruiter', label: 'recruiter' },
+                                { value: 'admin', label: 'admin' }
+                            ]
+                        } value={role} onChange={handleRoleChange} />
                     </FormControl>
                     <Button variant='contained' shape='square' sx={{ width: '100%' }} onClick={handleSignUp}>Sign Up</Button>
                     <Typography>Don't have an account? <Link to="/signin">Log In</Link></Typography>
