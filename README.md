@@ -1,34 +1,25 @@
 # Career GPT App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Uses [Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/), and [React Testing Library](https://github.com/testing-library/react-testing-library) to create a modern [React](https://react.dev/) app compatible with [Create React App](https://create-react-app.dev/)
+
+```sh
+npx degit reduxjs/redux-templates/packages/vite-template-redux my-app
+```
 
 ## Candidate
 
 ## Recruiter
 
-## Available Scripts
+## Scripts
 
-In the project directory, you can run:
+- `dev`/`start` - start dev server and open browser
+- `build` - build for production
+- `preview` - locally preview production build
+- `test` - launch test runner
+- `prod` - deploy to AWS S3
 
-### `npm start`
+## Inspiration
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- [Create React App](https://github.com/facebook/create-react-app/tree/main/packages/cra-template)
+- [Vite](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react)
+- [Vitest](https://github.com/vitest-dev/vitest/tree/main/examples/react-testing-lib)

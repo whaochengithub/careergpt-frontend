@@ -14,9 +14,6 @@ const Nav = ({ title }) => {
             case '/recruiter/profile':
                 setActive('Profile');
                 break;
-            case '/dashboard':
-                setActive('DashBoard');
-                break;
             case '/setting':
                 setActive('Setting');
                 break;
@@ -43,12 +40,6 @@ const Nav = ({ title }) => {
                 onClose={toggleDrawer(false)}
             >
                 <MenuList>
-                    <MenuItem>
-                        <ListItemIcon>
-                            {/* <SendIcon fontSize="small" /> */}
-                        </ListItemIcon>
-                        <Link to='/'><Typography variant="inherit" onClick={() => setActive('Dashboard')}>Dashboard</Typography></Link>
-                    </MenuItem>
                     <MenuItem>
                         <ListItemIcon>
                             {/* <PriorityHighIcon fontSize="small" /> */}

@@ -1,7 +1,7 @@
 import {
     createBrowserRouter,
 } from "react-router-dom";
-import App from "../App";
+import App from "../../App";
 import CandidateProfile from "../pages/candidate/Profile";
 import RecruiterProfile from "../pages/recruiter/Profile";
 import Setting from "../pages/Setting";
@@ -11,7 +11,7 @@ import SignUp from "../pages/SignUp";
 export const router = createBrowserRouter([
     {
         path: "/",
-        element: <h1>Career GPT Dashboard</h1>,
+        element: <CandidateProfile />,
     },
     {
         path: "/showcase",
