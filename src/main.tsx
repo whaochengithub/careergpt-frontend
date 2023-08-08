@@ -6,13 +6,13 @@ import "./index.css"
 import { router } from "./app/router"
 import { RouterProvider } from "react-router-dom"
 import {
-  Checkbox,
   createTheme,
   CssBaseline,
   responsiveFontSizes,
-  styled,
   ThemeProvider,
 } from "@mui/material"
+import { persistor } from "./app/store"
+import { PersistGate } from "redux-persist/integration/react"
 import { orange } from "@mui/material/colors"
 
 let theme = createTheme({
@@ -149,7 +149,7 @@ let theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: ({ ownerState, theme }) => {
-          const style = {}
+          const style: any = {}
           if (ownerState.shape === "square") {
             style.borderRadius = 6
           }
@@ -176,28 +176,18 @@ let theme = createTheme({
       },
     },
   },
-  status: {
-    danger: orange[500],
-  },
 })
 
 theme = responsiveFontSizes(theme)
 theme.spacing(2)
 
-const CutomCheckbox = styled(Checkbox)(({ theme }) => ({
-  color: theme.status.danger,
-  "&.Mui-checked": {
-    color: theme.status.danger,
-  },
-}))
-
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <Provider store={store}>
+  <Provider store={store}>
+    <PersistGate loading={null} persistor={persistor}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <RouterProvider router={router} />
       </ThemeProvider>
-    </Provider>
-  </React.StrictMode>,
+    </PersistGate>
+  </Provider>,
 )

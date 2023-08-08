@@ -1,11 +1,25 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit"
-import counterReducer from "../features/counter/counterSlice"
+import authorizationReducer from "../features/authorization/authorizationSlice"
+import storage from "redux-persist/lib/storage" // defaults to localStorage for web
+import { persistStore, persistReducer } from "redux-persist"
+
+const persistConfig = {
+  key: "authorization",
+  storage,
+}
+
+const persistedAuthorizationReducer = persistReducer(
+  persistConfig,
+  authorizationReducer,
+)
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
+    authorization: persistedAuthorizationReducer,
   },
 })
+
+export const persistor = persistStore(store)
 
 export type AppDispatch = typeof store.dispatch
 export type RootState = ReturnType<typeof store.getState>
