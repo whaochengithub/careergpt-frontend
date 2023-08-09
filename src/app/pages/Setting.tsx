@@ -11,17 +11,25 @@ import {
   Stack,
   Typography,
 } from "@mui/material"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import AppHeader from "../components/AppHeader"
 import { Modal } from "../components/common/Modal/Modal"
 import { Button } from "../components/common/Button"
 import { BootstrapInput } from "../components/common/BootstrapInput"
 import Nav from "../components/Nav"
+import { getSetting } from "../apis/setting"
+import useSetting from "../../features/setting/useSetting"
 
 const Setting = () => {
   const [creditModalOpen, setCreditModalOpen] = useState(false)
   const [emailModalOpen, setEmailModalOpen] = useState(false)
   const [passwordModalOpen, setPasswordModalOpen] = useState(false)
+
+  const { getSetting } = useSetting()
+
+  useEffect(() => {
+    getSetting()
+  }, [])
 
   const handleCreditModalClose = () => {
     setCreditModalOpen(false)
@@ -38,7 +46,7 @@ const Setting = () => {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
       <AppHeader />
-      <Nav />
+      <Nav title={"Setting"} />
       <Paper sx={{ flexGrow: "1", m: 1, p: 3 }}>
         <Box sx={{ mb: 2 }}>
           <Typography variant="subtitle1" sx={{ mb: 2 }}>

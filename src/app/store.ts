@@ -1,7 +1,21 @@
-import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit"
+import {
+  configureStore,
+  ThunkAction,
+  Action,
+  getDefaultMiddleware,
+} from "@reduxjs/toolkit"
 import authorizationReducer from "../features/authorization/authorizationSlice"
 import storage from "redux-persist/lib/storage" // defaults to localStorage for web
-import { persistStore, persistReducer } from "redux-persist"
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist"
 
 const persistConfig = {
   key: "authorization",
@@ -17,6 +31,11 @@ export const store = configureStore({
   reducer: {
     authorization: persistedAuthorizationReducer,
   },
+  middleware: getDefaultMiddleware({
+    serializableCheck: {
+      ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+    },
+  }),
 })
 
 export const persistor = persistStore(store)

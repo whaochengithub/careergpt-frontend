@@ -28,7 +28,7 @@ import { Chip } from "./app/components/common/Chip"
 import { BootstrapInput } from "./app/components/common/BootstrapInput"
 import { Modal } from "./app/components/common/Modal"
 
-function a11yProps(index) {
+function a11yProps(index: number) {
   return {
     id: `simple-tab-${index}`,
     "aria-controls": `simple-tabpanel-${index}`,
