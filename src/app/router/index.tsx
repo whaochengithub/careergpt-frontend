@@ -23,9 +23,9 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <RequireAuth>
-        <CandidateProfile />
-      </RequireAuth>
+      // <RequireAuth>
+      <CandidateProfile />
+      // </RequireAuth>
     ),
   },
   {
@@ -43,9 +43,9 @@ export const router = createBrowserRouter([
   {
     path: "/recruiter/profile",
     element: (
-      <RequireAuth>
-        <RecruiterProfile />
-      </RequireAuth>
+      // <RequireAuth>
+      <RecruiterProfile />
+      // </RequireAuth>
     ),
   },
   {

@@ -22,7 +22,7 @@ const getAccessToken = () => {
 }
 
 const postConfig: Params = {
-  baseUrl: "https://dummyjson.com",
+  baseUrl: authEndpoint,
   headers: {
     "Access-Control-Allow-Origin": "*",
     "Content-Type": "application/json",
@@ -68,7 +68,7 @@ export const postAPI = async (
 
 //config for get request note that the method as changed to get this is very important
 const getConfig: Params = {
-  baseUrl: "https://dummyjson.com",
+  baseUrl: authEndpoint,
   headers: {
     "Access-Control-Allow-Origin": "*",
     "Content-Type": "application/json",
