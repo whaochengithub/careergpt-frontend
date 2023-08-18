@@ -13,6 +13,7 @@ import { signin as signinAPI } from "../../app/apis/signin"
 import { Navigate, useNavigate } from "react-router"
 import { register } from "../../app/apis/register"
 import parseJwt from "../../app/utils/parseJWT"
+import { APIResponse } from "../../app/utils/ajaxUtil"
 
 export function useAuth() {
   const isLoggedIn = useSelector(selectIsLoggedIn)
@@ -20,20 +21,29 @@ export function useAuth() {
   const dispatch = useDispatch()
   let navigate = useNavigate()
 
-  const signin = (email: string, password: string, callback: () => void) => {
-    return signinAPI({ email, password }).then((response) => {
-      const token = response.data.access_token
-      try {
-        const { role } = parseJwt(token)
-        if (token) {
-          dispatch(setLoggedIn(true))
-          dispatch(setAccessToken(token))
-          dispatch(setRole(role))
-          callback()
-          //dispatch(setTokenExpiryDate(Number(expires_in)))
+  const signin = (
+    email: string,
+    password: string,
+    callback: (resp: APIResponse) => void,
+  ) => {
+    return signinAPI({ email, password }).then((response: APIResponse) => {
+      if (response.error) {
+        callback({ error: response.error })
+      } else if (response.data) {
+        const token = response.data.access_token
+        try {
+          const { role } = parseJwt(token)
+          if (token) {
+            dispatch(setLoggedIn(true))
+            dispatch(setAccessToken(token))
+            dispatch(setRole(role))
+            callback(response)
+            //dispatch(setTokenExpiryDate(Number(expires_in)))
+          }
+        } catch (error) {
+          console.warn("Jwt parse failed.")
+          callback({ error })
         }
-      } catch (error) {
-        console.warn("Jwt parse failed.")
       }
     })
   }

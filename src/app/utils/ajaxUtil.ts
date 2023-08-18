@@ -12,6 +12,11 @@ interface Params {
   method: string
 }
 
+export type APIResponse = {
+  error?: object
+  data?: object
+}
+
 const getAccessToken = () => {
   const auth = localStorage.getItem("persist:authorization")
   let accessToken = ""
@@ -52,15 +57,13 @@ export const postAPI = async (
     .then((response) => {
       console.info("Post API response", response)
       return {
-        status: response.status,
         data: response.data,
       }
     })
     .catch((error) => {
       console.warn("Post API error", error)
       return {
-        status: error.status,
-        data: error.response,
+        error,
       }
     })
 }

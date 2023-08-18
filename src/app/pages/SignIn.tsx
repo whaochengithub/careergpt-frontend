@@ -16,6 +16,8 @@ import { BootstrapInput } from "../components/common/BootstrapInput"
 import { Button } from "../components/common/Button"
 import { Modal } from "../components/common/Modal"
 import { useAuth } from "../../features/authorization/useAuth"
+import { APIResponse } from "../utils/ajaxUtil"
+import { validateEmail } from "../utils/validation"
 
 const SignIn = () => {
   const [email, setEmail] = useState("")
@@ -23,6 +25,7 @@ const SignIn = () => {
   const [open, setOpen] = useState(false)
   const [emailError, setEmailError] = useState(false)
   const [showNotification, setShowNotification] = useState(false)
+  const [showError, setShowError] = useState(false)
   const auth = useAuth()
 
   let navigate = useNavigate()
@@ -32,13 +35,17 @@ const SignIn = () => {
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    auth.signin(email, password, () => {
+    auth.signin(email, password, (response: APIResponse) => {
       // Send them back to the page they tried to visit when they were
       // redirected to the login page. Use { replace: true } so we don't create
       // another entry in the history stack for the login page.  This means that
       // when they get to the protected page and click the back button, they
       // won't end up back on the login page, which is also really nice for the
       // user experience.
+      if (response.error) {
+        setShowError(true)
+        return
+      }
       navigate(from, { replace: true })
     })
   }
@@ -51,18 +58,8 @@ const SignIn = () => {
     setShowNotification(false)
   }
 
-  const validateEmail = (email: string) => {
-    if (
-      String(email)
-        .toLowerCase()
-        .match(
-          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-        )
-    ) {
-      return true
-    } else {
-      return false
-    }
+  const handleErrorClose = () => {
+    setShowError(false)
   }
 
   const handleSendCode = () => {
@@ -71,6 +68,7 @@ const SignIn = () => {
 
   const handleEmailChange = (event: React.FormEvent<HTMLInputElement>) => {
     setEmail(event.currentTarget.value)
+    setEmailError(!validateEmail(event.target.value))
   }
 
   const handlePasswordChange = (event: React.FormEvent<HTMLInputElement>) => {
@@ -99,15 +97,20 @@ const SignIn = () => {
           </Typography>
           <Typography variant="subtitle2">CareerGPT</Typography>
           <FormControl variant="standard" sx={{ width: "100%" }}>
-            <InputLabel shrink htmlFor="siginin-username" required>
-              Username
+            <InputLabel shrink htmlFor="siginin-email" required>
+              Email
             </InputLabel>
             <BootstrapInput
-              id="siginin-username"
+              id="siginin-email"
               value={email}
               onChange={handleEmailChange}
               sx={{ width: "100%" }}
             />
+            {emailError && (
+              <FormHelperText sx={{ color: "red" }}>
+                Invalid Email
+              </FormHelperText>
+            )}
           </FormControl>
           <FormControl variant="standard" sx={{ width: "100%" }}>
             <Button
@@ -135,7 +138,10 @@ const SignIn = () => {
             Log In
           </Button>
           <Typography>
-            Don't have an account? <Link to="/signup">Sign Up</Link>
+            Don't have an account?{" "}
+            <Link to="/signup" replace>
+              Sign Up
+            </Link>
           </Typography>
         </Stack>
       </Grid>
@@ -180,6 +186,15 @@ const SignIn = () => {
           <FormHelperText sx={{ color: "red" }}>Invalid Email</FormHelperText>
         )}
       </Modal>
+      <Snackbar
+        open={showError}
+        autoHideDuration={2000}
+        onClose={handleErrorClose}
+      >
+        <Alert severity="error" sx={{ width: "100%" }}>
+          The user name or password are incorrect.
+        </Alert>
+      </Snackbar>
       <Snackbar
         open={showNotification}
         autoHideDuration={2000}
