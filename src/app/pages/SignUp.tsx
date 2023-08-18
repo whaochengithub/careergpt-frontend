@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material"
 import { Link, useLocation, useNavigate } from "react-router-dom"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { BootstrapInput } from "../components/common/BootstrapInput"
 import { Button } from "../components/common/Button"
 import Select from "react-select"
@@ -36,6 +36,12 @@ const SignUp = () => {
   const auth = useAuth()
 
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (auth.isLoggedIn) {
+      navigate("/", { replace: true })
+    }
+  }, [])
 
   const handleUsernameChange = (event: React.FormEvent<HTMLInputElement>) => {
     setUsername(event.currentTarget.value)

@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material"
 import { Link, useLocation, useNavigate } from "react-router-dom"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { BootstrapInput } from "../components/common/BootstrapInput"
 import { Button } from "../components/common/Button"
 import { Modal } from "../components/common/Modal"
@@ -30,6 +30,12 @@ const SignIn = () => {
 
   let navigate = useNavigate()
   let location = useLocation()
+
+  useEffect(() => {
+    if (auth.isLoggedIn) {
+      navigate("/", { replace: true })
+    }
+  }, [])
 
   let from = location.state?.from?.pathname || "/"
 

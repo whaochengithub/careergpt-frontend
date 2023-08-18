@@ -7,6 +7,7 @@ import {
   selectTokenExpiryDate,
   setRole,
   ROLE,
+  selectRole,
 } from "./authorizationSlice"
 import { authEndpoint } from "../../oauthConfig"
 import { signin as signinAPI } from "../../app/apis/signin"
@@ -17,6 +18,8 @@ import { APIResponse } from "../../app/utils/ajaxUtil"
 
 export function useAuth() {
   const isLoggedIn = useSelector(selectIsLoggedIn)
+  const isCandidate = useSelector(selectRole) === ROLE.CANDIDATE
+  const isRecruiter = useSelector(selectRole) === ROLE.RECRUITER
   const tokenExpiryDate = useSelector(selectTokenExpiryDate)
   const dispatch = useDispatch()
   let navigate = useNavigate()
@@ -83,5 +86,13 @@ export function useAuth() {
     navigate("/signin", { replace: false })
   }
 
-  return { signin, signup, signout, isLoggedIn, tokenExpiryDate }
+  return {
+    signin,
+    signup,
+    signout,
+    isLoggedIn,
+    isCandidate,
+    isRecruiter,
+    tokenExpiryDate,
+  }
 }

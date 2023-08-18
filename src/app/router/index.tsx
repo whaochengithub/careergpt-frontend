@@ -9,6 +9,7 @@ import { useAuth } from "../../features/authorization/useAuth"
 import Interview from "../pages/candidate/Interview"
 import JobApplication from "../pages/candidate/JobApplication"
 import CandidateProfile from "../pages/candidate/Profile"
+import NoPermission from "../pages/NoPermission"
 import CandidateSearch from "../pages/recruiter/CandidateSearch"
 import RecruiterProfile from "../pages/recruiter/Profile"
 import Setting from "../pages/Setting"
@@ -23,6 +24,28 @@ const RequireAuth = ({ children }: { children: JSX.Element }) => {
 
   if (!isLoggedIn) {
     return <Navigate to="/signin" state={{ from: location }} replace />
+  }
+  return children
+}
+
+const RequireCandidate = ({ children }: { children: JSX.Element }) => {
+  // let auth = useAuth();
+  const { isCandidate } = useAuth()
+  let location = useLocation()
+
+  if (!isCandidate) {
+    return <Navigate to="/no_permission" state={{ from: location }} replace />
+  }
+  return children
+}
+
+const RequireRecruiter = ({ children }: { children: JSX.Element }) => {
+  // let auth = useAuth();
+  const { isRecruiter } = useAuth()
+  let location = useLocation()
+
+  if (!isRecruiter) {
+    return <Navigate to="/no_permission" state={{ from: location }} replace />
   }
   return children
 }
@@ -49,6 +72,10 @@ export const router = createBrowserRouter([
     element: <App />,
   },
   {
+    path: "/no_permission",
+    element: <NoPermission />,
+  },
+  {
     path: "/profile",
     element: (
       <RequireAuth>
@@ -60,7 +87,9 @@ export const router = createBrowserRouter([
     path: "/candidate/profile",
     element: (
       <RequireAuth>
-        <CandidateProfile />
+        <RequireCandidate>
+          <CandidateProfile />
+        </RequireCandidate>
       </RequireAuth>
     ),
   },
@@ -68,7 +97,9 @@ export const router = createBrowserRouter([
     path: "/job_application",
     element: (
       <RequireAuth>
-        <JobApplication />
+        <RequireCandidate>
+          <JobApplication />
+        </RequireCandidate>
       </RequireAuth>
     ),
   },
@@ -76,7 +107,9 @@ export const router = createBrowserRouter([
     path: "/interview",
     element: (
       <RequireAuth>
-        <Interview />
+        <RequireCandidate>
+          <Interview />
+        </RequireCandidate>
       </RequireAuth>
     ),
   },
@@ -84,7 +117,9 @@ export const router = createBrowserRouter([
     path: "/recruiter/profile",
     element: (
       <RequireAuth>
-        <RecruiterProfile />
+        <RequireRecruiter>
+          <RecruiterProfile />
+        </RequireRecruiter>
       </RequireAuth>
     ),
   },
@@ -92,7 +127,9 @@ export const router = createBrowserRouter([
     path: "/candidate_search",
     element: (
       <RequireAuth>
-        <CandidateSearch />
+        <RequireRecruiter>
+          <CandidateSearch />
+        </RequireRecruiter>
       </RequireAuth>
     ),
   },
