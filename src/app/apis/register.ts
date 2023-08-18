@@ -1,10 +1,11 @@
+import { ROLE } from "../../features/authorization/authorizationSlice"
 import { postAPI } from "../utils/ajaxUtil"
 
-export const register = async () => {
-  return postAPI("auth/login", {
-    email: "student1@gmail.com",
-    password: "password",
-    userName: "student1",
-    role: "CANDIDATE",
-  })
+export const register = async (account: {
+  email: string
+  password: string
+  userName: string
+  role: ROLE
+}) => {
+  return postAPI("auth/register", account)
 }

@@ -1,16 +1,23 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { RootState } from "../../app/store"
 
+export enum ROLE {
+  CANDIDATE = "CANDIDATE",
+  RECRUITER = "RECRUITER",
+}
+
 interface AuthorizationState {
   loggedIn: boolean
   accessToken: string
   tokenExpiryDate: string
+  role: ROLE
 }
 
 const initialState: AuthorizationState = {
   loggedIn: false,
   accessToken: "",
   tokenExpiryDate: "",
+  role: ROLE.CANDIDATE,
 }
 
 export const authorizationSlice = createSlice({
@@ -28,10 +35,13 @@ export const authorizationSlice = createSlice({
       date.setSeconds(date.getSeconds() + action.payload)
       state.tokenExpiryDate = date.toISOString()
     },
+    setRole: (state, action: PayloadAction<ROLE>) => {
+      state.role = action.payload
+    },
   },
 })
 
-export const { setLoggedIn, setAccessToken, setTokenExpiryDate } =
+export const { setLoggedIn, setAccessToken, setTokenExpiryDate, setRole } =
   authorizationSlice.actions
 
 export const selectIsLoggedIn = (state: RootState) =>
@@ -40,5 +50,6 @@ export const selectAccessToken = (state: RootState) =>
   state.authorization.accessToken
 export const selectTokenExpiryDate = (state: RootState) =>
   state.authorization.tokenExpiryDate
+export const selectRole = (state: RootState) => state.authorization.role
 
 export default authorizationSlice.reducer

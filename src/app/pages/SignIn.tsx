@@ -18,6 +18,8 @@ import { Modal } from "../components/common/Modal"
 import { useAuth } from "../../features/authorization/useAuth"
 
 const SignIn = () => {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
   const [open, setOpen] = useState(false)
   const [emailError, setEmailError] = useState(false)
   const [showNotification, setShowNotification] = useState(false)
@@ -30,8 +32,7 @@ const SignIn = () => {
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
-
-    auth.signin("", () => {
+    auth.signin(email, password, () => {
       // Send them back to the page they tried to visit when they were
       // redirected to the login page. Use { replace: true } so we don't create
       // another entry in the history stack for the login page.  This means that
@@ -68,6 +69,14 @@ const SignIn = () => {
     setShowNotification(true)
   }
 
+  const handleEmailChange = (event: React.FormEvent<HTMLInputElement>) => {
+    setEmail(event.currentTarget.value)
+  }
+
+  const handlePasswordChange = (event: React.FormEvent<HTMLInputElement>) => {
+    setPassword(event.currentTarget.value)
+  }
+
   return (
     <Grid container>
       <Grid
@@ -93,7 +102,12 @@ const SignIn = () => {
             <InputLabel shrink htmlFor="siginin-username" required>
               Username
             </InputLabel>
-            <BootstrapInput id="siginin-username" sx={{ width: "100%" }} />
+            <BootstrapInput
+              id="siginin-username"
+              value={email}
+              onChange={handleEmailChange}
+              sx={{ width: "100%" }}
+            />
           </FormControl>
           <FormControl variant="standard" sx={{ width: "100%" }}>
             <Button
@@ -105,7 +119,12 @@ const SignIn = () => {
             <InputLabel shrink htmlFor="siginin-password" required>
               Password
             </InputLabel>
-            <BootstrapInput id="siginin-password" sx={{ width: "100%" }} />
+            <BootstrapInput
+              id="siginin-password"
+              value={password}
+              onChange={handlePasswordChange}
+              sx={{ width: "100%" }}
+            />
           </FormControl>
           <Button
             onClick={handleSubmit}

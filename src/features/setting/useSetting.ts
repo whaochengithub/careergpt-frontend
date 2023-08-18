@@ -10,9 +10,7 @@ function useSetting() {
   const dispatch = useDispatch()
 
   const getSetting = () => {
-    return getSettingAPI().then((response) => {
-      console.log("getSetting API response", response)
-    })
+    return getSettingAPI().then((response) => {})
   }
   const setting = {}
 

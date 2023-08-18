@@ -27,13 +27,8 @@ import { Button } from "./app/components/common/Button"
 import { Chip } from "./app/components/common/Chip"
 import { BootstrapInput } from "./app/components/common/BootstrapInput"
 import { Modal } from "./app/components/common/Modal"
+import { a11yProps } from "./app/utils/a11yProps"
 
-function a11yProps(index: number) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  }
-}
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props
 

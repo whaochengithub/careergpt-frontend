@@ -11,19 +11,41 @@ import {
   Typography,
 } from "@mui/material"
 import MenuIcon from "@mui/icons-material/Menu"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Avatar } from "./common/Avatar"
 import { Button } from "./common/Button"
+import { useSelector } from "react-redux"
+import {
+  ROLE,
+  selectRole,
+} from "../../features/authorization/authorizationSlice"
+import { useNavigate } from "react-router"
+import { useAuth } from "../../features/authorization/useAuth"
 
-const candidate_pages = ["Job Application", "Interview Preparation", "Profile"]
-const recruiter_pages = ["Candidate Search", "Profile"]
-const settings = ["Profile", "Account", "Dashboard", "Logout"]
+const candidate_pages = [
+  { label: "Job Application", path: "/job_application" },
+  { label: "Interview Preparation", path: "/interview" },
+]
+const recruiter_pages = [
+  {
+    label: "Candidate Search",
+    path: "/candidate_search",
+  },
+]
+const settings = [
+  { label: "Setting", path: "/setting" },
+  { label: "Logout", path: "/signin" },
+]
 
 type Props = {}
 
 const AppHeader = (props: Props) => {
   const [anchorElNav, setAnchorElNav] = React.useState(null)
   const [anchorElUser, setAnchorElUser] = React.useState(null)
+  const [pages, setPages] = useState<{ label: string; path: string }[]>([])
+  const role = useSelector(selectRole)
+  const navigate = useNavigate()
+  const auth = useAuth()
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget)
@@ -38,6 +60,26 @@ const AppHeader = (props: Props) => {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null)
+  }
+
+  useEffect(() => {
+    switch (role) {
+      case ROLE.CANDIDATE:
+        setPages(candidate_pages)
+        break
+      case ROLE.RECRUITER:
+        setPages(recruiter_pages)
+        break
+      default:
+        break
+    }
+  }, [])
+
+  const handleNavigation = (to: string) => {
+    if (to === "/signin") {
+      auth.signout()
+    }
+    navigate(to)
   }
 
   return (
@@ -97,9 +139,9 @@ const AppHeader = (props: Props) => {
                 display: { xs: "block", md: "none" },
               }}
             >
-              {candidate_pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+              {pages.map(({ label, path }: { label: string; path: string }) => (
+                <MenuItem key={label} onClick={() => handleNavigation(path)}>
+                  <Typography textAlign="center">{label}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -123,10 +165,10 @@ const AppHeader = (props: Props) => {
             MOYI Design
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {candidate_pages.map((page) => (
+            {pages.map(({ label, path }: { label: string; path: string }) => (
               <Button
-                key={page}
-                onClick={handleCloseNavMenu}
+                key={label}
+                onClick={() => handleNavigation(path)}
                 sx={{
                   my: 2,
                   color: "black",
@@ -135,7 +177,7 @@ const AppHeader = (props: Props) => {
                   textTransform: "capitalize",
                 }}
               >
-                {page}
+                {label}
               </Button>
             ))}
           </Box>
@@ -184,9 +226,9 @@ const AppHeader = (props: Props) => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+              {settings.map(({ label, path }) => (
+                <MenuItem key={label} onClick={() => handleNavigation(path)}>
+                  <Typography textAlign="center">{label}</Typography>
                 </MenuItem>
               ))}
             </Menu>

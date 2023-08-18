@@ -15,6 +15,15 @@ const Nav = ({}) => {
       case "/setting":
         setActive("Setting")
         break
+      case "/job_application":
+        setActive("Job Application")
+        break
+      case "/interview":
+        setActive("Interview Preparation")
+        break
+      case "/candidate_search":
+        setActive("Candidate Search")
+        break
       default:
         break
     }

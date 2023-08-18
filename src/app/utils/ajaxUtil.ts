@@ -24,7 +24,6 @@ const getAccessToken = () => {
 const postConfig: Params = {
   baseUrl: authEndpoint,
   headers: {
-    "Access-Control-Allow-Origin": "*",
     "Content-Type": "application/json",
   },
   method: "post",
@@ -51,14 +50,14 @@ export const postAPI = async (
         },
   })
     .then((response) => {
-      console.log(response)
+      console.info("Post API response", response)
       return {
         status: response.status,
         data: response.data,
       }
     })
     .catch((error) => {
-      console.log(error)
+      console.warn("Post API error", error)
       return {
         status: error.status,
         data: error.response,

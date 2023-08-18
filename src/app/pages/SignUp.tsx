@@ -3,29 +3,59 @@ import {
   FormControl,
   Grid,
   InputLabel,
-  MenuItem,
+  SelectChangeEvent,
   Stack,
   Typography,
 } from "@mui/material"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import React, { useState } from "react"
 import { BootstrapInput } from "../components/common/BootstrapInput"
 import { Button } from "../components/common/Button"
 import Select from "react-select"
+import { useAuth } from "../../features/authorization/useAuth"
+import { ROLE } from "../../features/authorization/authorizationSlice"
 
 const SignUp = () => {
-  const [role, setRole] = useState("candidate")
+  const [username, setUsername] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [role, setRole] = useState<{ label: string; value: ROLE }>({
+    label: "candidate",
+    value: ROLE.CANDIDATE,
+  })
+
+  const auth = useAuth()
+
   const navigate = useNavigate()
-  const handleRoleChange = (value) => {
-    setRole(value)
+  let location = useLocation()
+  let from = location.state?.from?.pathname || "/"
+
+  const handleUsernameChange = (event: React.FormEvent<HTMLInputElement>) => {
+    setUsername(event.currentTarget.value)
   }
-  const handleSignUp = () => {
-    if (role.value === "candidate") {
-      navigate("/candidate/profile")
-    } else if (role.value === "recruiter") {
-      navigate("/recruiter/profile")
-    } else {
-    }
+
+  const handleEmailChange = (event: React.FormEvent<HTMLInputElement>) => {
+    setEmail(event.currentTarget.value)
+  }
+  const handlePasswordChange = (event: React.FormEvent<HTMLInputElement>) => {
+    setPassword(event.currentTarget.value)
+  }
+
+  const handleRoleChange = (selected: { label: string; value: ROLE }) => {
+    setRole(selected)
+  }
+
+  const handleSignUp = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    auth.signup(username, email, password, role.value, () => {
+      // Send them back to the page they tried to visit when they were
+      // redirected to the signup page. Use { replace: true } so we don't create
+      // another entry in the history stack for the login page.  This means that
+      // when they get to the protected page and click the back button, they
+      // won't end up back on the signup page, which is also really nice for the
+      // user experience.
+      navigate(from, { replace: true })
+    })
   }
   return (
     <Grid container>
@@ -52,19 +82,34 @@ const SignUp = () => {
             <InputLabel shrink htmlFor="signup-username" required>
               Username
             </InputLabel>
-            <BootstrapInput id="signup-username" sx={{ width: "100%" }} />
+            <BootstrapInput
+              id="signup-username"
+              value={username}
+              onChange={handleUsernameChange}
+              sx={{ width: "100%" }}
+            />
           </FormControl>
           <FormControl variant="standard" sx={{ width: "100%" }}>
             <InputLabel shrink htmlFor="signup-email" required>
               Email
             </InputLabel>
-            <BootstrapInput id="signup-email" sx={{ width: "100%" }} />
+            <BootstrapInput
+              id="signup-email"
+              value={email}
+              onChange={handleEmailChange}
+              sx={{ width: "100%" }}
+            />
           </FormControl>
           <FormControl variant="standard" sx={{ width: "100%" }}>
             <InputLabel shrink htmlFor="signup-password" required>
               Password
             </InputLabel>
-            <BootstrapInput id="siginin-password" sx={{ width: "100%" }} />
+            <BootstrapInput
+              id="siginin-password"
+              value={password}
+              onChange={handlePasswordChange}
+              sx={{ width: "100%" }}
+            />
           </FormControl>
           <FormControl variant="standard" sx={{ width: "100%" }}>
             <InputLabel shrink htmlFor="signup-reenter-password" required>
@@ -86,8 +131,8 @@ const SignUp = () => {
             </InputLabel>
             <Select
               options={[
-                { value: "candidate", label: "candidate" },
-                { value: "recruiter", label: "recruiter" },
+                { value: ROLE.CANDIDATE, label: "candidate" },
+                { value: ROLE.RECRUITER, label: "recruiter" },
                 { value: "admin", label: "admin" },
               ]}
               value={role}

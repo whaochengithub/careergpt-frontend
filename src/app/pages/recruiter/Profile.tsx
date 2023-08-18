@@ -11,7 +11,7 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material"
-import React from "react"
+import React, { useState } from "react"
 import AppHeader from "../../components/AppHeader"
 import { Stack } from "@mui/system"
 import { Button } from "../../components/common/Button"
@@ -22,8 +22,10 @@ import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined
 import PermContactCalendarOutlinedIcon from "@mui/icons-material/PermContactCalendarOutlined"
 import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDownOutlined"
 import Nav from "../../components/Nav"
+import { BootstrapInput } from "../../components/common/BootstrapInput"
 
 const Profile = () => {
+  const [profileEditMode, setProfileEditMode] = useState(false)
   return (
     <Box sx={{ flexDirection: "column", height: "100vh" }}>
       <AppHeader />
@@ -57,27 +59,124 @@ const Profile = () => {
                       Personal Details
                     </Typography>
                     <IconButton>
-                      <EditOutlined />
+                      <EditOutlined onClick={() => setProfileEditMode(true)} />
                     </IconButton>
                   </Stack>
-                  <Stack direction={"row"} alignItems={"center"}>
-                    <Avatar flex={1} sx={{ width: 82, height: 82, m: 3 }}>
-                      {" "}
-                    </Avatar>
-                    <Stack flex={2} justifyContent={"space-between"}>
-                      <Typography variant="subtitle1" mb={1}>
-                        John Doe
-                      </Typography>
-                      <Box>
-                        <Typography color="text.secondary" variant="body2">
-                          Software Engineer in New York, NY
-                        </Typography>
-                        <Typography color="text.secondary" variant="body2">
-                          888-888-8888
-                        </Typography>
-                      </Box>
-                    </Stack>
-                  </Stack>
+                  <Grid
+                    container
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                    rowSpacing={1}
+                    marginBottom={2}
+                  >
+                    <Grid item xs={3} sm={3} md={3} lg={3}>
+                      <Avatar flex={1} sx={{ width: 82, height: 82, m: 3 }}>
+                        {" "}
+                      </Avatar>
+                    </Grid>
+                    <Grid item xs={9} sm={9} md={9} lg={9} paddingLeft={3}>
+                      <Stack flex={2} justifyContent={"space-between"}>
+                        <Typography variant="subtitle1">John Doe</Typography>
+                        <Chip
+                          label="Open to market"
+                          variant="outlined"
+                          color="primary"
+                          sx={{ width: 105, height: 20 }}
+                        />
+                      </Stack>
+                    </Grid>
+                    {profileEditMode ? (
+                      <Grid container mx={3} rowGap={2}>
+                        <Grid item xs={12} sm={12} md={12}>
+                          <Typography variant="subtitle2" fontWeight={"bold"}>
+                            Email
+                          </Typography>
+                          <BootstrapInput fullWidth value={"xxxx@gmail.com"} />
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12}>
+                          <Typography variant="subtitle2" fontWeight={"bold"}>
+                            PhoneNumber
+                          </Typography>
+                          <BootstrapInput
+                            fullWidth
+                            value={"+1 (555) 000-0000"}
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12}>
+                          <Typography variant="subtitle2" fontWeight={"bold"}>
+                            Company
+                          </Typography>
+                          <BootstrapInput fullWidth value={"MoYi Tech"} />
+                        </Grid>
+                        <Grid item xs={6} sm={6} md={6}></Grid>
+                        <Grid item xs={6} sm={6} md={6}>
+                          <Button
+                            variant="outlined"
+                            shape="square"
+                            onClick={() => setProfileEditMode(false)}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            sx={{ ml: 2 }}
+                            variant="contained"
+                            shape="square"
+                            onClick={() => setProfileEditMode(false)}
+                          >
+                            Save
+                          </Button>
+                        </Grid>
+                      </Grid>
+                    ) : (
+                      <>
+                        <Grid
+                          item
+                          paddingLeft={4}
+                          xs={3}
+                          sm={3}
+                          md={3}
+                          lg={3}
+                          alignItems="center"
+                          justifyContent={"center"}
+                        >
+                          <Typography variant="subtitle2">Email</Typography>
+                        </Grid>
+                        <Grid item xs={9} sm={9} md={9} lg={9} paddingLeft={3}>
+                          <Typography>xxxxx@gmail.com</Typography>
+                        </Grid>
+                        <Grid
+                          item
+                          paddingLeft={4}
+                          xs={3}
+                          sm={3}
+                          md={3}
+                          lg={3}
+                          alignItems="center"
+                          justifyContent={"center"}
+                        >
+                          <Typography variant="subtitle2">Phone</Typography>
+                        </Grid>
+                        <Grid item xs={9} sm={9} md={9} lg={9} paddingLeft={3}>
+                          <Typography>000-000-0000</Typography>
+                        </Grid>
+                        <Grid
+                          item
+                          paddingLeft={4}
+                          xs={3}
+                          sm={3}
+                          md={3}
+                          lg={3}
+                          alignItems="center"
+                          justifyContent={"center"}
+                        >
+                          <Typography variant="subtitle2">Company</Typography>
+                        </Grid>
+                        <Grid item xs={9} sm={9} md={9} lg={9} paddingLeft={3}>
+                          <Typography>Moyi Tech</Typography>
+                        </Grid>
+                      </>
+                    )}
+                  </Grid>
                 </Stack>
               </Card>
               <Card title="test" sx={{ mb: 2 }}>
@@ -201,20 +300,29 @@ const Profile = () => {
                           <ToggleButton
                             value="all"
                             aria-label="all"
-                            sx={{ px: 2, py: 1.8 }}
+                            sx={{
+                              px: 2,
+                              py: 1.8,
+                              textTransform: "capitalize",
+                            }}
                           >
-                            All
+                            <Typography variant="body2" color="primary">
+                              All
+                            </Typography>
                             <Chip
-                              sx={{ ml: 1 }}
                               label="13"
                               size="small"
-                              color="warning"
+                              sx={{
+                                ml: 1,
+                                color: "#A36307",
+                                backgroundColor: "rgba(253, 204, 13, 0.11)",
+                              }}
                             />
                           </ToggleButton>
                           <ToggleButton
                             value="like"
                             aria-label="like"
-                            sx={{ px: 2, py: 1.8 }}
+                            sx={{ px: 2, py: 1.8, textTransform: "capitalize" }}
                           >
                             Like
                             <Chip sx={{ ml: 1 }} label="6" size="small" />
@@ -222,7 +330,7 @@ const Profile = () => {
                           <ToggleButton
                             value="maybe"
                             aria-label="maybe"
-                            sx={{ px: 2, py: 1.8 }}
+                            sx={{ px: 2, py: 1.8, textTransform: "capitalize" }}
                           >
                             Maybe
                             <Chip sx={{ ml: 1 }} label="6" size="small" />
@@ -230,7 +338,7 @@ const Profile = () => {
                           <ToggleButton
                             value="igonore"
                             aria-label="ignore"
-                            sx={{ px: 2, py: 1.8 }}
+                            sx={{ px: 2, py: 1.8, textTransform: "capitalize" }}
                           >
                             Ignore
                             <Chip sx={{ ml: 1 }} label="1" size="small" />

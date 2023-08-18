@@ -5,11 +5,14 @@ import {
   setTokenExpiryDate,
   selectIsLoggedIn,
   selectTokenExpiryDate,
+  setRole,
+  ROLE,
 } from "./authorizationSlice"
 import { authEndpoint } from "../../oauthConfig"
 import { signin as signinAPI } from "../../app/apis/signin"
 import { Navigate, useNavigate } from "react-router"
 import { register } from "../../app/apis/register"
+import parseJwt from "../../app/utils/parseJWT"
 
 export function useAuth() {
   const isLoggedIn = useSelector(selectIsLoggedIn)
@@ -17,29 +20,50 @@ export function useAuth() {
   const dispatch = useDispatch()
   let navigate = useNavigate()
 
-  const signin = (username: string, callback: () => void) => {
-    return signinAPI().then((response) => {
-      const token = response.data.token
-      if (token) {
-        dispatch(setLoggedIn(true))
-        dispatch(setAccessToken(token))
-        callback()
-        //dispatch(setTokenExpiryDate(Number(expires_in)))
+  const signin = (email: string, password: string, callback: () => void) => {
+    return signinAPI({ email, password }).then((response) => {
+      const token = response.data.access_token
+      try {
+        const { role } = parseJwt(token)
+        if (token) {
+          dispatch(setLoggedIn(true))
+          dispatch(setAccessToken(token))
+          dispatch(setRole(role))
+          callback()
+          //dispatch(setTokenExpiryDate(Number(expires_in)))
+        }
+      } catch (error) {
+        console.warn("Jwt parse failed.")
       }
     })
   }
 
   const signup = (
-    username: string,
+    userName: string,
     email: string,
     password: string,
-    role: string,
+    role: ROLE,
     callback: () => void,
   ) => {
-    return register().then((response) => {
-      console.log("signup resp", response)
-      navigate("/signin", { replace: true })
-      callback()
+    return register({
+      userName,
+      email,
+      password,
+      role,
+    }).then((response) => {
+      const token = response.data.access_token
+      try {
+        const { role } = parseJwt(token)
+        if (token) {
+          dispatch(setLoggedIn(true))
+          dispatch(setAccessToken(token))
+          dispatch(setRole(role))
+          callback()
+          //dispatch(setTokenExpiryDate(Number(expires_in)))
+        }
+      } catch (error) {
+        console.warn("Jwt parse failed.")
+      }
     })
   }
 
