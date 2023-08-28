@@ -23,6 +23,8 @@ const getAccessToken = () => {
   if (auth) {
     accessToken = JSON.parse(auth).accessToken
   }
+  // remove quote
+  accessToken = accessToken.replace(/['"]+/g, "")
   return accessToken
 }
 

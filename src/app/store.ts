@@ -5,6 +5,7 @@ import {
   getDefaultMiddleware,
 } from "@reduxjs/toolkit"
 import authorizationReducer from "../features/authorization/authorizationSlice"
+import settingReducer from "../features/setting/settingSlice"
 import storage from "redux-persist/lib/storage" // defaults to localStorage for web
 import {
   persistStore,
@@ -30,6 +31,7 @@ const persistedAuthorizationReducer = persistReducer(
 export const store = configureStore({
   reducer: {
     authorization: persistedAuthorizationReducer,
+    setting: settingReducer,
   },
   middleware: getDefaultMiddleware({
     serializableCheck: {

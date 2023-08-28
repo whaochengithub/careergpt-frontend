@@ -56,7 +56,7 @@ export function useAuth() {
     email: string,
     password: string,
     role: ROLE,
-    callback: () => void,
+    callback: (response: object) => void,
   ) => {
     return register({
       userName,
@@ -64,6 +64,10 @@ export function useAuth() {
       password,
       role,
     }).then((response) => {
+      if (response.error) {
+        console.warn("Sign Up failed.")
+        callback(response)
+      }
       const token = response.data.access_token
       try {
         const { role } = parseJwt(token)
@@ -71,8 +75,8 @@ export function useAuth() {
           dispatch(setLoggedIn(true))
           dispatch(setAccessToken(token))
           dispatch(setRole(role))
-          callback()
           //dispatch(setTokenExpiryDate(Number(expires_in)))
+          callback(response)
         }
       } catch (error) {
         console.warn("Jwt parse failed.")

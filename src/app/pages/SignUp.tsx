@@ -28,6 +28,8 @@ const SignUp = () => {
   const [password2, setPassword2] = useState("")
   const [passwordError, setPasswordError] = useState(false)
   const [showError, setShowError] = useState(false)
+  const [showFail, setShowFail] = useState(false)
+
   const [role, setRole] = useState<{ label: string; value: ROLE }>({
     label: "candidate",
     value: ROLE.CANDIDATE,
@@ -81,19 +83,27 @@ const SignUp = () => {
     setShowError(false)
   }
 
+  const handleFailClose = () => {
+    setShowFail(false)
+  }
+
   const handleSignUp = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (usernameError || emailError || passwordError) {
       setShowError(true)
     } else {
-      auth.signup(username, email, password, role.value, () => {
+      auth.signup(username, email, password, role.value, (response) => {
         // Send them back to the page they tried to visit when they were
         // redirected to the signup page. Use { replace: true } so we don't create
         // another entry in the history stack for the login page.  This means that
         // when they get to the protected page and click the back button, they
         // won't end up back on the signup page, which is also really nice for the
         // user experience.
-        navigate("/", { replace: true })
+        if (response.error) {
+          setShowFail(true)
+        } else {
+          navigate("/", { replace: true })
+        }
       })
     }
   }
@@ -246,6 +256,15 @@ const SignUp = () => {
       >
         <Alert severity="error" sx={{ width: "100%" }}>
           The user name, email or password are invalid.
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={showFail}
+        autoHideDuration={2000}
+        onClose={handleFailClose}
+      >
+        <Alert severity="error" sx={{ width: "100%" }}>
+          Something wrong. Please contact us.
         </Alert>
       </Snackbar>
     </Grid>

@@ -25,7 +25,7 @@ const Setting = () => {
   const [emailModalOpen, setEmailModalOpen] = useState(false)
   const [passwordModalOpen, setPasswordModalOpen] = useState(false)
 
-  const { getSetting } = useSetting()
+  const { getSetting, setting } = useSetting()
 
   useEffect(() => {
     getSetting()
@@ -58,14 +58,16 @@ const Setting = () => {
               <Typography variant="subtitle2">Username</Typography>
             </Grid>
             <Grid item xs={4} md={4}>
-              <Typography variant="body1">Test</Typography>
+              <Typography variant="body1">
+                {setting.userName ?? "No username"}
+              </Typography>
             </Grid>
             <Grid item xs={4} md={4}></Grid>
             <Grid item xs={4} md={4}>
               <Typography variant="subtitle2">Email</Typography>
             </Grid>
             <Grid item xs={4} md={4}>
-              <Typography>Test@gmail.com</Typography>
+              <Typography>{setting.email ?? "No email"}</Typography>
             </Grid>
             <Grid item xs={4} md={4}>
               <Link href="#" onClick={() => setEmailModalOpen(true)}>
@@ -76,7 +78,7 @@ const Setting = () => {
               <Typography variant="subtitle2">Password</Typography>
             </Grid>
             <Grid item xs={4} md={4}>
-              <Typography>XXXXXXXX</Typography>
+              <Typography>{setting.password}</Typography>
             </Grid>
             <Grid item xs={4} md={4}>
               <Link href="#" onClick={() => setPasswordModalOpen(true)}>
@@ -94,7 +96,7 @@ const Setting = () => {
               <Typography variant="subtitle2">Total Credits</Typography>
             </Grid>
             <Grid item xs={4} md={4}>
-              <Typography>50</Typography>
+              <Typography>{setting.credit ?? "No credit"}</Typography>
             </Grid>
             <Grid item xs={4} md={4}>
               <Link
