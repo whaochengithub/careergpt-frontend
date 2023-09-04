@@ -18,11 +18,14 @@ import { Modal } from "../components/common/Modal"
 import { useAuth } from "../../features/authorization/useAuth"
 import { APIResponse } from "../utils/ajaxUtil"
 import { validateEmail } from "../utils/validation"
+import { getResetPasswordLink } from "../apis/resetPassword"
+import useSetting from "../../features/setting/useSetting"
 
 const SignIn = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [open, setOpen] = useState(false)
+  const [forgotEmail, setForgotEmail] = useState("")
   const [emailError, setEmailError] = useState(false)
   const [showNotification, setShowNotification] = useState(false)
   const [showError, setShowError] = useState(false)
@@ -69,6 +72,7 @@ const SignIn = () => {
   }
 
   const handleSendCode = () => {
+    getResetPasswordLink({ email: forgotEmail })
     setShowNotification(true)
   }
 
@@ -181,7 +185,9 @@ const SignIn = () => {
           <BootstrapInput
             color="error"
             type="email"
+            value={forgotEmail}
             onChange={(e) => {
+              setForgotEmail(e.target.value)
               setEmailError(!validateEmail(e.target.value))
             }}
             id="siginin-password"

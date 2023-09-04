@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   FormControl,
   FormControlLabel,
@@ -8,6 +9,7 @@ import {
   Paper,
   Radio,
   RadioGroup,
+  Snackbar,
   Stack,
   Typography,
 } from "@mui/material"
@@ -19,11 +21,15 @@ import { BootstrapInput } from "../components/common/BootstrapInput"
 import Nav from "../components/Nav"
 import { getSetting } from "../apis/setting"
 import useSetting from "../../features/setting/useSetting"
+import { resetPassword } from "../apis/resetPassword"
 
 const Setting = () => {
   const [creditModalOpen, setCreditModalOpen] = useState(false)
   const [emailModalOpen, setEmailModalOpen] = useState(false)
   const [passwordModalOpen, setPasswordModalOpen] = useState(false)
+  const [showNotification, setShowNotification] = useState(false)
+
+  const [newPassword, setNewPassword] = useState("")
 
   const { getSetting, setting } = useSetting()
 
@@ -41,6 +47,22 @@ const Setting = () => {
 
   const handlePasswordModalClose = () => {
     setPasswordModalOpen(false)
+  }
+
+  const submitNewPassword = () => {
+    resetPassword({ email: setting.email, password: newPassword }).then(
+      (response) => {
+        if (response.error) {
+          return
+        }
+        setPasswordModalOpen(false)
+        setShowNotification(true)
+      },
+    )
+  }
+
+  const handleNotificationClose = () => {
+    setShowNotification(false)
   }
 
   return (
@@ -276,7 +298,12 @@ const Setting = () => {
         onClose={handlePasswordModalClose}
         width={600}
         actionButtons={[
-          <Button key="submit" variant="contained" shape={"square"}>
+          <Button
+            key="submit"
+            variant="contained"
+            shape={"square"}
+            onClick={submitNewPassword}
+          >
             Submit
           </Button>,
         ]}
@@ -292,10 +319,23 @@ const Setting = () => {
             <InputLabel shrink htmlFor="change-password-new" required>
               New Password
             </InputLabel>
-            <BootstrapInput id="change-password-new" sx={{ width: 200 }} />
+            <BootstrapInput
+              id="change-password-new"
+              sx={{ width: 200 }}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
           </FormControl>
         </Stack>
       </Modal>
+      <Snackbar
+        open={showNotification}
+        autoHideDuration={2000}
+        onClose={handleNotificationClose}
+      >
+        <Alert severity="success" sx={{ width: "100%" }}>
+          Password Changed Successfully.
+        </Alert>
+      </Snackbar>
     </Box>
   )
 }

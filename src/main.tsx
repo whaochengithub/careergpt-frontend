@@ -14,6 +14,7 @@ import {
 import { persistor } from "./app/store"
 import { PersistGate } from "redux-persist/integration/react"
 import { orange } from "@mui/material/colors"
+import { ErrorBoundary } from "react-error-boundary"
 
 let theme = createTheme({
   typography: {
@@ -182,12 +183,14 @@ theme = responsiveFontSizes(theme)
 theme.spacing(2)
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <Provider store={store}>
-    <PersistGate loading={null} persistor={persistor}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <RouterProvider router={router} />
-      </ThemeProvider>
-    </PersistGate>
-  </Provider>,
+  <ErrorBoundary fallback={<div>Something wrong!</div>}>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <RouterProvider router={router} />
+        </ThemeProvider>
+      </PersistGate>
+    </Provider>
+  </ErrorBoundary>,
 )

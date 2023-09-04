@@ -137,7 +137,8 @@ export const putAPI = async (
 ): Promise<any> => {
   return await axios({
     ...putConfig,
-    url: `${getConfig.baseUrl}/${url}/${data}`,
+    url: `${getConfig.baseUrl}/${url}`,
+    data,
     headers: options?.credential
       ? {
           ...postConfig.headers,
