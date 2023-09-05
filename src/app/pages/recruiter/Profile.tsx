@@ -23,9 +23,36 @@ import PermContactCalendarOutlinedIcon from "@mui/icons-material/PermContactCale
 import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDownOutlined"
 import Nav from "../../components/Nav"
 import { BootstrapInput } from "../../components/common/BootstrapInput"
+import { Modal } from "../../components/common/Modal"
+import CandidateProfile from "./CandidateProfile"
+import Verify from "./Verify"
+import NewPosition from "./NewPosition"
 
 const Profile = () => {
   const [profileEditMode, setProfileEditMode] = useState(false)
+  const [candidateProfileModalShow, setCandidateProfileModalShow] =
+    useState(false)
+  const [verifyModalShow, setVerifyModalShow] = useState(false)
+  const [positionModalShow, setPositionModalShow] = useState(false)
+
+  const handleCandidateProfileModalClose = () => {
+    setCandidateProfileModalShow(false)
+  }
+
+  const handleVerifyModalClose = () => {
+    setVerifyModalShow(false)
+  }
+
+  const handlePositionModalClose = () => {
+    setPositionModalShow(false)
+  }
+
+  const handleSaveCandidateProfile = () => {}
+
+  const handleVerify = () => {}
+
+  const handleNewPosition = () => {}
+
   return (
     <Box sx={{ flexDirection: "column", height: "100vh" }}>
       <AppHeader />
@@ -37,6 +64,7 @@ const Profile = () => {
               sx={{ float: "right", mx: 4, my: 3, mb: 0 }}
               variant="contained"
               shape="square"
+              onClick={() => setPositionModalShow(true)}
             >
               Post New Position
             </Button>
@@ -82,6 +110,7 @@ const Profile = () => {
                           variant="outlined"
                           color="primary"
                           sx={{ width: 105, height: 20 }}
+                          onClick={() => setVerifyModalShow(true)}
                         />
                       </Stack>
                     </Grid>
@@ -350,7 +379,11 @@ const Profile = () => {
                       </IconButton>
                     </Stack>
                     <Stack direction={"row"} m={2} gap={4}>
-                      <Stack alignItems={"center"} gap={1}>
+                      <Stack
+                        alignItems={"center"}
+                        gap={1}
+                        onClick={() => setCandidateProfileModalShow(true)}
+                      >
                         <Avatar flex={1} sx={{ width: 54, height: 54 }}>
                           {" "}
                         </Avatar>
@@ -398,6 +431,59 @@ const Profile = () => {
           </Stack>
         </Stack>
       </Paper>
+      <Modal
+        width={800}
+        title={"Candidate Profile"}
+        open={candidateProfileModalShow}
+        onClose={handleCandidateProfileModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        actionButtons={[
+          <Button
+            variant="contained"
+            onClick={handleSaveCandidateProfile}
+            key={"save"}
+          >
+            Save
+          </Button>,
+        ]}
+      >
+        <CandidateProfile />
+      </Modal>
+      <Modal
+        width={700}
+        title={"Verify Recruiter Info"}
+        open={verifyModalShow}
+        onClose={handleVerifyModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        actionButtons={[
+          <Button variant="contained" onClick={handleVerify} key={"submit"}>
+            Submit
+          </Button>,
+        ]}
+      >
+        <Verify />
+      </Modal>
+      <Modal
+        width={700}
+        title={"New Position"}
+        open={positionModalShow}
+        onClose={handlePositionModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        actionButtons={[
+          <Button
+            variant="contained"
+            onClick={handleNewPosition}
+            key={"submit"}
+          >
+            Submit
+          </Button>,
+        ]}
+      >
+        <NewPosition />
+      </Modal>
     </Box>
   )
 }
