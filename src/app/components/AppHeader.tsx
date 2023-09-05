@@ -23,13 +23,13 @@ import { useNavigate } from "react-router"
 import { useAuth } from "../../features/authorization/useAuth"
 
 const candidate_pages = [
-  { label: "Job Application", path: "/job_application" },
+  { label: "Job Application", path: "/job-application" },
   { label: "Interview Preparation", path: "/interview" },
 ]
 const recruiter_pages = [
   {
     label: "Candidate Search",
-    path: "/candidate_search",
+    path: "/candidate-search",
   },
 ]
 const settings = [

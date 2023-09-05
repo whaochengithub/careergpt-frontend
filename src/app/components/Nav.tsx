@@ -15,13 +15,13 @@ const Nav = ({}) => {
       case "/setting":
         setActive("Setting")
         break
-      case "/job_application":
+      case "/job-application":
         setActive("Job Application")
         break
       case "/interview":
         setActive("Interview Preparation")
         break
-      case "/candidate_search":
+      case "/candidate-search":
         setActive("Candidate Search")
         break
       default:
@@ -31,7 +31,9 @@ const Nav = ({}) => {
 
   return (
     <Stack marginLeft={2} direction={"row"} alignItems="center" gap={2}>
-      <Typography variant="h6">{active}</Typography>
+      <Typography variant="h6" fontWeight={"bolder"}>
+        {active}
+      </Typography>
     </Stack>
   )
 }

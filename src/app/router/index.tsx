@@ -43,7 +43,7 @@ const RequireCandidate = ({ children }: { children: JSX.Element }) => {
   let location = useLocation()
 
   if (!isCandidate) {
-    return <Navigate to="/no_permission" state={{ from: location }} replace />
+    return <Navigate to="/no-permission" state={{ from: location }} replace />
   }
   return children
 }
@@ -54,7 +54,7 @@ const RequireRecruiter = ({ children }: { children: JSX.Element }) => {
   let location = useLocation()
 
   if (!isRecruiter) {
-    return <Navigate to="/no_permission" state={{ from: location }} replace />
+    return <Navigate to="/no-permission" state={{ from: location }} replace />
   }
   return children
 }
@@ -91,7 +91,7 @@ export const router = createBrowserRouter([
         element: <App />,
       },
       {
-        path: "/no_permission",
+        path: "/no-permission",
         element: <NoPermission />,
       },
       {
@@ -113,7 +113,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/job_application",
+        path: "/job-application",
         element: (
           <RequireAuth>
             <RequireCandidate>
@@ -143,7 +143,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/candidate_search",
+        path: "/candidate-search",
         element: (
           <RequireAuth>
             <RequireRecruiter>
