@@ -1,6 +1,11 @@
+import { ExpandLess, ExpandMore } from "@mui/icons-material"
 import {
   Box,
+  Collapse,
   Grid,
+  List,
+  ListItemButton,
+  ListItemText,
   Pagination,
   Paper,
   Stack,
@@ -38,6 +43,11 @@ function InterviewTabPanel(props) {
 const Interview = (props: Props) => {
   const [interviewTab, setInterviewTab] = useState(0)
   const [resumeTab, setResumeTab] = useState(0)
+  const [open, setOpen] = React.useState(true)
+
+  const handleClick = () => {
+    setOpen(!open)
+  }
   const handleInterviewTabChange = (event, newTab: number) => {
     setInterviewTab(newTab)
   }
@@ -174,17 +184,48 @@ const Interview = (props: Props) => {
                   can provide you with the customized resume for your target
                   positions.
                 </Typography>
-                <Box height={300} overflow={"auto"} bgcolor="white">
-                  <Tabs
-                    value={resumeTab}
-                    onChange={handleResumeTabChange}
-                    aria-label="resume tabs"
+                <Box
+                  height={300}
+                  overflow={"auto"}
+                  bgcolor="white"
+                  sx={{ display: "flex" }}
+                >
+                  <List
+                    sx={{
+                      width: "100%",
+                      maxWidth: 200,
+                      bgcolor: "background.paper",
+                    }}
+                    component="nav"
+                    aria-labelledby="nested-list-subheader"
                   >
-                    <Tab label="Java" {...a11yProps(0)} />
-                    <Tab label="SQL" {...a11yProps(1)} />
-                    <Tab label="Machine Learing" {...a11yProps(2)} />
-                    <Tab label="Javascript" {...a11yProps(3)} />
-                  </Tabs>
+                    <ListItemButton onClick={handleClick}>
+                      <ListItemText primary="JAVA" />
+                      {open ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemButton>
+                    <Collapse in={open} timeout="auto" unmountOnExit>
+                      <List component="div" disablePadding>
+                        <ListItemButton sx={{ pl: 4 }}>
+                          <ListItemText primary="Data Structure" />
+                        </ListItemButton>
+                        <ListItemButton sx={{ pl: 4 }}>
+                          <ListItemText primary="Programming Language" />
+                        </ListItemButton>
+                        <ListItemButton sx={{ pl: 4 }}>
+                          <ListItemText primary="Syntax" />
+                        </ListItemButton>
+                      </List>
+                    </Collapse>
+                    <ListItemButton>
+                      <ListItemText primary="Javascript" />
+                    </ListItemButton>
+                    <ListItemButton>
+                      <ListItemText primary="SQL" />
+                    </ListItemButton>
+                    <ListItemButton>
+                      <ListItemText primary="Machine Learning" />
+                    </ListItemButton>
+                  </List>
                   <InterviewTabPanel value={resumeTab} index={0}>
                     <ul>
                       <Typography variant="body1" component={"li"}>
