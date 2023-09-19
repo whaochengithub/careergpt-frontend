@@ -91,7 +91,7 @@ export const getAPI = async (
     headers: options?.credential
       ? {
           ...postConfig.headers,
-          Authorization: `Bearer ${getAccessToken()}`,
+          Authorization: `Bearer ${options?.access_token ?? getAccessToken()}`,
         }
       : {
           ...postConfig.headers,

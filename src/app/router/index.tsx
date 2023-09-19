@@ -8,6 +8,7 @@ import {
 import App from "../../App"
 import {
   ROLE,
+  selectAccessToken,
   selectRole,
 } from "../../features/authorization/authorizationSlice"
 import { useAuth } from "../../features/authorization/useAuth"
@@ -22,18 +23,27 @@ import ResetPassword from "../pages/ResetPassword"
 import Setting from "../pages/Setting"
 import SignIn from "../pages/SignIn"
 import SignUp from "../pages/SignUp"
-import { store } from "../store"
 import PageNotFound from "../pages/PageNotFound"
 import ErrorPage from "../pages/ErrorPage"
+import { useEffect } from "react"
+import useSetting from "../../features/setting/useSetting"
 
 const RequireAuth = ({ children }: { children: JSX.Element }) => {
-  // let auth = useAuth();
-  const { isLoggedIn } = useAuth()
+  let auth = useAuth()
+  const access_token = useSelector(selectAccessToken)
   let location = useLocation()
+  const { getSetting, setting } = useSetting()
 
-  if (!isLoggedIn) {
+  useEffect(() => {
+    if (access_token) {
+      getSetting(access_token)
+    }
+  }, [access_token])
+
+  if (!auth.isLoggedIn) {
     return <Navigate to="/signin" state={{ from: location }} replace />
   }
+
   return children
 }
 

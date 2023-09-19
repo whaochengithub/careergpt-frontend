@@ -27,8 +27,10 @@ import { Modal } from "../../components/common/Modal"
 import CandidateProfile from "./CandidateProfile"
 import Verify from "./Verify"
 import NewPosition from "./NewPosition"
+import useSetting from "../../../features/setting/useSetting"
 
 const Profile = () => {
+  const { getSetting, setting } = useSetting()
   const [profileEditMode, setProfileEditMode] = useState(false)
   const [candidateProfileModalShow, setCandidateProfileModalShow] =
     useState(false)
@@ -104,7 +106,9 @@ const Profile = () => {
                     </Grid>
                     <Grid item xs={9} sm={9} md={9} lg={9} paddingLeft={3}>
                       <Stack flex={2} justifyContent={"space-between"}>
-                        <Typography variant="subtitle1">John Doe</Typography>
+                        <Typography variant="subtitle1">
+                          {setting?.userName ?? "No Username"}
+                        </Typography>
                         <Chip
                           label="Open to market"
                           variant="outlined"
@@ -120,7 +124,7 @@ const Profile = () => {
                           <Typography variant="subtitle2" fontWeight={"bold"}>
                             Email
                           </Typography>
-                          <BootstrapInput fullWidth value={"xxxx@gmail.com"} />
+                          <BootstrapInput fullWidth value={setting.email} />
                         </Grid>
                         <Grid item xs={12} sm={12} md={12}>
                           <Typography variant="subtitle2" fontWeight={"bold"}>
@@ -171,7 +175,7 @@ const Profile = () => {
                           <Typography variant="subtitle2">Email</Typography>
                         </Grid>
                         <Grid item xs={9} sm={9} md={9} lg={9} paddingLeft={3}>
-                          <Typography>xxxxx@gmail.com</Typography>
+                          <Typography>{setting.email}</Typography>
                         </Grid>
                         <Grid
                           item

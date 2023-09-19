@@ -33,10 +33,6 @@ const Setting = () => {
 
   const { getSetting, setting } = useSetting()
 
-  useEffect(() => {
-    getSetting()
-  }, [])
-
   const handleCreditModalClose = () => {
     setCreditModalOpen(false)
   }

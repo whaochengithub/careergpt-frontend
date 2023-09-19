@@ -7,8 +7,8 @@ function useSetting() {
   const setting = useSelector(selectAccount)
   const dispatch = useDispatch()
 
-  const getSetting = () => {
-    return getSettingAPI().then((response) => {
+  const getSetting = (access_token?: string) => {
+    return getSettingAPI(access_token).then((response) => {
       if (!response.error) {
         dispatch(setAccount(response.data))
       }

@@ -19,7 +19,6 @@ import { useAuth } from "../../features/authorization/useAuth"
 import { APIResponse } from "../utils/ajaxUtil"
 import { validateEmail } from "../utils/validation"
 import { getResetPasswordLink } from "../apis/resetPassword"
-import useSetting from "../../features/setting/useSetting"
 
 const SignIn = () => {
   const [email, setEmail] = useState("")
