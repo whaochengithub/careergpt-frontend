@@ -32,7 +32,6 @@ import NewPosition from "./NewPosition"
 import useSetting from "../../../features/setting/useSetting"
 import { getRecruiterDetail } from "../../apis/recruiterDetail"
 import { postJob } from "../../apis/job/postJob"
-import { getJobs } from "../../apis/job/search"
 
 const Profile = () => {
   const { getSetting, setting } = useSetting()
@@ -59,7 +58,7 @@ const Profile = () => {
 
   useEffect(() => {
     refreshDetail()
-  }, [])
+  }, [setting])
 
   const onPositionChange = (position: object) => {
     setNewPosition(position)
@@ -301,6 +300,11 @@ const Profile = () => {
                 Posted Jobs
               </Typography>
               <Stack spacing={2}>
+                {postJobs.length === 0 && (
+                  <Typography>
+                    No Posted Jobs, Click POST NEW POSITION to post a new job!
+                  </Typography>
+                )}
                 {postJobs.map((job, index) => (
                   <Card key={index}>
                     <Stack divider={<Divider variant="middle" />}>

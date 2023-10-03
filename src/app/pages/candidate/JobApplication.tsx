@@ -2,6 +2,7 @@ import {
   Alert,
   Box,
   Card,
+  CircularProgress,
   FormControl,
   Grid,
   IconButton,
@@ -26,6 +27,7 @@ import PermContactCalendarOutlinedIcon from "@mui/icons-material/PermContactCale
 import { getJobs } from "../../apis/job/search"
 import { applyJob } from "../../apis/job/applyJob"
 import useSetting from "../../../features/setting/useSetting"
+import _ from "lodash"
 
 type Props = {}
 
@@ -36,16 +38,18 @@ const JobApplication = (props: Props) => {
   const [applySuccess, setApplySuccess] = useState(false)
   const [jobs, setJobs] = useState([])
   const [selectedJob, setSelectedJob] = useState(null)
+  const [loading_apply, setLoading_apply] = useState(false)
 
   useEffect(() => {
     getJobs("").then((jobs) => {
-      if (jobs?.data) {
+      if (jobs?.data && _.isArray(jobs.data)) {
         setJobs(jobs.data)
       }
     })
   }, [])
 
   const handleApply = () => {
+    setLoading_apply(true)
     applyJob({
       jobId: selectedJob?.id,
       applicantId: setting.id,
@@ -54,6 +58,7 @@ const JobApplication = (props: Props) => {
     }).then((response) => {
       if (response.data) {
         setApplySuccess(true)
+        setLoading_apply(false)
         setTimeout(() => setApplySuccess(false), 6000)
       }
     })
@@ -61,7 +66,7 @@ const JobApplication = (props: Props) => {
 
   const handleSearch = () => {
     getJobs(keyword).then((jobs) => {
-      if (jobs?.data) {
+      if (jobs?.data && _.isArray(jobs.data)) {
         setJobs(jobs.data)
       }
     })
@@ -130,6 +135,7 @@ const JobApplication = (props: Props) => {
           <Grid container spacing={2}>
             <Grid item xs={5} sm={5} md={5} lg={5}>
               <Stack gap={2}>
+                {jobs.length === 0 && <Typography>No Jobs</Typography>}
                 {jobs.map((job) => (
                   <Card key={`${job.id}`} onClick={() => setSelectedJob(job)}>
                     <Stack
@@ -214,9 +220,17 @@ const JobApplication = (props: Props) => {
                     <Button
                       variant="contained"
                       shape={"square"}
+                      disabled={loading_apply}
                       onClick={handleApply}
                     >
                       Apply
+                      {loading_apply && (
+                        <CircularProgress
+                          size={"1rem"}
+                          sx={{ ml: 1 }}
+                          color={"warning"}
+                        />
+                      )}
                     </Button>
                     <Button variant="outlined" shape={"square"}>
                       Prepare for Interview

@@ -18,7 +18,10 @@ type Props = {
 function NewPosition({ onChange }: Props) {
   const [jobTitle, setJobTitle] = useState("")
   const [jobLocation, setJobLocation] = useState("")
-  const [jobType, setJobType] = useState("Contract")
+  const [jobType, setJobType] = useState({
+    value: "Contract",
+    label: "Contract",
+  })
   const [jobDescription, setJobDescription] = useState("")
   const { setting } = useSetting()
 
@@ -27,14 +30,20 @@ function NewPosition({ onChange }: Props) {
       postBy: setting.id,
       title: jobTitle,
       postTime: new Date().toLocaleDateString("en-US"),
-      jobType: jobType,
+      jobType: jobType.value,
       location: jobLocation,
       description: jobDescription,
     })
   }, [onChange, setting, jobTitle, jobLocation, jobType, jobDescription])
 
-  const handleJobTypeChange = ({ value, label }) => {
-    setJobType(value)
+  const handleJobTypeChange = ({
+    value,
+    label,
+  }: {
+    value: string
+    label: string
+  }) => {
+    setJobType({ value, label })
   }
 
   return (
@@ -74,7 +83,7 @@ function NewPosition({ onChange }: Props) {
               { value: "Contract", label: "Contract" },
               { value: "Full Time", label: "Full Time" },
             ]}
-            value={{ value: "Contract", label: "Contract" }}
+            value={jobType}
             onChange={handleJobTypeChange}
           />
         </FormControl>
