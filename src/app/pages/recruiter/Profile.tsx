@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Card,
   Chip,
@@ -7,11 +8,12 @@ import {
   IconButton,
   Link,
   Paper,
+  Snackbar,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
 } from "@mui/material"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import AppHeader from "../../components/AppHeader"
 import { Stack } from "@mui/system"
 import { Button } from "../../components/common/Button"
@@ -28,6 +30,9 @@ import CandidateProfile from "./CandidateProfile"
 import Verify from "./Verify"
 import NewPosition from "./NewPosition"
 import useSetting from "../../../features/setting/useSetting"
+import { getRecruiterDetail } from "../../apis/recruiterDetail"
+import { postJob } from "../../apis/job/postJob"
+import { getJobs } from "../../apis/job/search"
 
 const Profile = () => {
   const { getSetting, setting } = useSetting()
@@ -36,6 +41,29 @@ const Profile = () => {
     useState(false)
   const [verifyModalShow, setVerifyModalShow] = useState(false)
   const [positionModalShow, setPositionModalShow] = useState(false)
+  const [newPosition, setNewPosition] = useState({})
+  const [postSuccess, setPostSuccess] = useState(false)
+  const [user, setUser] = useState(null)
+  const [postJobs, setPostJobs] = useState([])
+
+  const refreshDetail = () => {
+    getRecruiterDetail().then((detail) => {
+      if (detail?.data?.jobs) {
+        setPostJobs(detail.data.jobs)
+      }
+      if (detail?.data?.user) {
+        setUser(detail.data.user)
+      }
+    })
+  }
+
+  useEffect(() => {
+    refreshDetail()
+  }, [])
+
+  const onPositionChange = (position: object) => {
+    setNewPosition(position)
+  }
 
   const handleCandidateProfileModalClose = () => {
     setCandidateProfileModalShow(false)
@@ -53,7 +81,15 @@ const Profile = () => {
 
   const handleVerify = () => {}
 
-  const handleNewPosition = () => {}
+  const handleNewPosition = () => {
+    postJob(newPosition).then((response) => {
+      if (response?.data) {
+        setPostSuccess(true)
+        refreshDetail()
+      }
+      setPositionModalShow(false)
+    })
+  }
 
   return (
     <Box sx={{ flexDirection: "column", height: "100vh" }}>
@@ -240,7 +276,7 @@ const Profile = () => {
                     <Typography variant="subtitle2">Total Credits</Typography>
                   </Grid>
                   <Grid item xs={4} sm={4} md={4} lg={4} paddingLeft={3}>
-                    <Typography>50</Typography>
+                    <Typography>{user?.credit}</Typography>
                   </Grid>
                   <Grid
                     item
@@ -264,173 +300,166 @@ const Profile = () => {
               >
                 Posted Jobs
               </Typography>
-              <Card>
-                <Stack divider={<Divider variant="middle" />}>
-                  <Stack
-                    direction={"row"}
-                    paddingX={"20px"}
-                    paddingY={"14px"}
-                    alignItems={"center"}
-                    justifyContent={"space-between"}
-                  >
-                    <Box display={"flex"} alignItems={"center"} gap={2}>
-                      <Typography variant="subtitle1">
-                        Software Engineer
-                      </Typography>
-                      <Typography variant="body2" color={"primary"}>
-                        Moyi Tech
-                      </Typography>
-                      <Stack direction={"row"} alignItems="center" gap={0.5}>
-                        <PlaceOutlinedIcon />
-                        <Typography variant="body2" color="text.secondary">
-                          New York, NY
-                        </Typography>
-                      </Stack>
-                      <Stack direction={"row"} alignItems="center" gap={0.5}>
-                        <CalendarMonthOutlinedIcon />
-                        <Typography variant="body2" color="text.secondary">
-                          Posted 8 hours ago
-                        </Typography>
-                      </Stack>
-                      <Stack direction={"row"} alignItems="center" gap={0.5}>
-                        <PermContactCalendarOutlinedIcon />
-                        <Typography variant="body2" color="text.secondary">
-                          Contract
-                        </Typography>
-                      </Stack>
-                    </Box>
-                    <IconButton>
-                      <EditOutlined />
-                    </IconButton>
-                  </Stack>
-                  <Typography color="text.secondary" variant="body2" p={2}>
-                    Job Description: Software Engineer responsibilities include
-                    gathering user requirements, defining system functionality
-                    and writing code in various languages, like Java, Ruby on
-                    Rails or .NET programming languages (e.g. C++ or
-                    JScript.NET.) Our ideal candidates are familiar with the
-                    software development life cycle (SDLC) from preliminary
-                    system analysis to tests and deployment.
-                  </Typography>
-                  <Box>
-                    <Stack
-                      direction={"row"}
-                      paddingX={"20px"}
-                      paddingY={"14px"}
-                      alignItems={"center"}
-                      justifyContent={"space-between"}
-                    >
-                      <Box display={"flex"} alignItems={"center"} gap={2}>
-                        <Typography variant="subtitle1">Applicants</Typography>
-                        <ToggleButtonGroup
-                          value={"all"}
-                          exclusive
-                          onChange={() => {}}
-                          aria-label="applicants"
-                          size="small"
-                          sx={{ height: "25px" }}
-                        >
-                          <ToggleButton
-                            value="all"
-                            aria-label="all"
-                            sx={{
-                              px: 2,
-                              py: 1.8,
-                              textTransform: "capitalize",
-                            }}
-                          >
-                            <Typography variant="body2" color="primary">
-                              All
-                            </Typography>
-                            <Chip
-                              label="13"
-                              size="small"
-                              sx={{
-                                ml: 1,
-                                color: "#A36307",
-                                backgroundColor: "rgba(253, 204, 13, 0.11)",
-                              }}
-                            />
-                          </ToggleButton>
-                          <ToggleButton
-                            value="like"
-                            aria-label="like"
-                            sx={{ px: 2, py: 1.8, textTransform: "capitalize" }}
-                          >
-                            Like
-                            <Chip sx={{ ml: 1 }} label="6" size="small" />
-                          </ToggleButton>
-                          <ToggleButton
-                            value="maybe"
-                            aria-label="maybe"
-                            sx={{ px: 2, py: 1.8, textTransform: "capitalize" }}
-                          >
-                            Maybe
-                            <Chip sx={{ ml: 1 }} label="6" size="small" />
-                          </ToggleButton>
-                          <ToggleButton
-                            value="igonore"
-                            aria-label="ignore"
-                            sx={{ px: 2, py: 1.8, textTransform: "capitalize" }}
-                          >
-                            Ignore
-                            <Chip sx={{ ml: 1 }} label="1" size="small" />
-                          </ToggleButton>
-                        </ToggleButtonGroup>
-                      </Box>
-                      <IconButton>
-                        <KeyboardArrowDownOutlinedIcon />
-                      </IconButton>
-                    </Stack>
-                    <Stack direction={"row"} m={2} gap={4}>
+              <Stack spacing={2}>
+                {postJobs.map((job, index) => (
+                  <Card key={index}>
+                    <Stack divider={<Divider variant="middle" />}>
                       <Stack
+                        direction={"row"}
+                        paddingX={"20px"}
+                        paddingY={"14px"}
                         alignItems={"center"}
-                        gap={1}
-                        onClick={() => setCandidateProfileModalShow(true)}
+                        justifyContent={"space-between"}
                       >
-                        <Avatar flex={1} sx={{ width: 54, height: 54 }}>
-                          {" "}
-                        </Avatar>
-                        <Typography variant="body2" color="text.secondary">
-                          Smith
-                        </Typography>
+                        <Box display={"flex"} alignItems={"center"} gap={2}>
+                          <Typography variant="subtitle1">
+                            {job.title}
+                          </Typography>
+                          <Typography variant="body2" color={"primary"}>
+                            Moyi Tech
+                          </Typography>
+                          <Stack
+                            direction={"row"}
+                            alignItems="center"
+                            gap={0.5}
+                          >
+                            <PlaceOutlinedIcon />
+                            <Typography variant="body2" color="text.secondary">
+                              {job.location}
+                            </Typography>
+                          </Stack>
+                          <Stack
+                            direction={"row"}
+                            alignItems="center"
+                            gap={0.5}
+                          >
+                            <CalendarMonthOutlinedIcon />
+                            <Typography variant="body2" color="text.secondary">
+                              {job.postTime}
+                            </Typography>
+                          </Stack>
+                          <Stack
+                            direction={"row"}
+                            alignItems="center"
+                            gap={0.5}
+                          >
+                            <PermContactCalendarOutlinedIcon />
+                            <Typography variant="body2" color="text.secondary">
+                              {job.jobType}
+                            </Typography>
+                          </Stack>
+                        </Box>
+                        <IconButton>
+                          <EditOutlined />
+                        </IconButton>
                       </Stack>
-                      <Stack alignItems={"center"} gap={1}>
-                        <Avatar flex={1} sx={{ width: 54, height: 54 }}>
-                          {" "}
-                        </Avatar>
-                        <Typography variant="body2" color="text.secondary">
-                          Smith
-                        </Typography>
-                      </Stack>
-                      <Stack alignItems={"center"} gap={1}>
-                        <Avatar flex={1} sx={{ width: 54, height: 54 }}>
-                          {" "}
-                        </Avatar>
-                        <Typography variant="body2" color="text.secondary">
-                          Smith
-                        </Typography>
-                      </Stack>
-                      <Stack alignItems={"center"} gap={1}>
-                        <Avatar flex={1} sx={{ width: 54, height: 54 }}>
-                          {" "}
-                        </Avatar>
-                        <Typography variant="body2" color="text.secondary">
-                          Smith
-                        </Typography>
-                      </Stack>
-                      <Stack alignItems={"center"} gap={1}>
-                        <Avatar flex={1} sx={{ width: 54, height: 54 }}>
-                          {" "}
-                        </Avatar>
-                        <Typography variant="body2" color="text.secondary">
-                          Smith
-                        </Typography>
-                      </Stack>
+                      <Typography color="text.secondary" variant="body2" p={2}>
+                        {job.description}
+                      </Typography>
+                      <Box>
+                        <Stack
+                          direction={"row"}
+                          paddingX={"20px"}
+                          paddingY={"14px"}
+                          alignItems={"center"}
+                          justifyContent={"space-between"}
+                        >
+                          <Box display={"flex"} alignItems={"center"} gap={2}>
+                            <Typography variant="subtitle1">
+                              Applicants
+                            </Typography>
+                            <ToggleButtonGroup
+                              value={"all"}
+                              exclusive
+                              onChange={() => {}}
+                              aria-label="applicants"
+                              size="small"
+                              sx={{ height: "25px" }}
+                            >
+                              <ToggleButton
+                                value="all"
+                                aria-label="all"
+                                sx={{
+                                  px: 2,
+                                  py: 1.8,
+                                  textTransform: "capitalize",
+                                }}
+                              >
+                                <Typography variant="body2" color="primary">
+                                  All
+                                </Typography>
+                                <Chip
+                                  label={job.applicants.length}
+                                  size="small"
+                                  sx={{
+                                    ml: 1,
+                                    color: "#A36307",
+                                    backgroundColor: "rgba(253, 204, 13, 0.11)",
+                                  }}
+                                />
+                              </ToggleButton>
+                              <ToggleButton
+                                value="like"
+                                aria-label="like"
+                                sx={{
+                                  px: 2,
+                                  py: 1.8,
+                                  textTransform: "capitalize",
+                                }}
+                              >
+                                Like
+                                <Chip sx={{ ml: 1 }} label="0" size="small" />
+                              </ToggleButton>
+                              <ToggleButton
+                                value="maybe"
+                                aria-label="maybe"
+                                sx={{
+                                  px: 2,
+                                  py: 1.8,
+                                  textTransform: "capitalize",
+                                }}
+                              >
+                                Maybe
+                                <Chip sx={{ ml: 1 }} label="0" size="small" />
+                              </ToggleButton>
+                              <ToggleButton
+                                value="igonore"
+                                aria-label="ignore"
+                                sx={{
+                                  px: 2,
+                                  py: 1.8,
+                                  textTransform: "capitalize",
+                                }}
+                              >
+                                Ignore
+                                <Chip sx={{ ml: 1 }} label="0" size="small" />
+                              </ToggleButton>
+                            </ToggleButtonGroup>
+                          </Box>
+                          <IconButton>
+                            <KeyboardArrowDownOutlinedIcon />
+                          </IconButton>
+                        </Stack>
+                        <Stack direction={"row"} m={2} gap={4}>
+                          {job.applicants.map((applicant) => (
+                            <Stack alignItems={"center"} gap={1}>
+                              <Avatar flex={1} sx={{ width: 54, height: 54 }}>
+                                {" "}
+                              </Avatar>
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                              >
+                                {applicant.applicantName}
+                              </Typography>
+                            </Stack>
+                          ))}
+                        </Stack>
+                      </Box>
                     </Stack>
-                  </Box>
-                </Stack>
-              </Card>
+                  </Card>
+                ))}
+              </Stack>
             </Box>
           </Stack>
         </Stack>
@@ -486,8 +515,13 @@ const Profile = () => {
           </Button>,
         ]}
       >
-        <NewPosition />
+        <NewPosition onChange={onPositionChange} />
       </Modal>
+      <Snackbar open={postSuccess} autoHideDuration={6000}>
+        <Alert severity="success" sx={{ width: "100%" }}>
+          Post Successfully!
+        </Alert>
+      </Snackbar>
     </Box>
   )
 }

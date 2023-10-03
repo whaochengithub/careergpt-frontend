@@ -108,8 +108,8 @@ export const getAPI = async (
     .catch((error) => {
       console.warn(error)
       if (
-        error.response.data.message === "Invalid/Expired Token!" ||
-        error.response.data.message === "invalid token"
+        error.response?.data?.message === "Invalid/Expired Token!" ||
+        error.response?.data?.message === "invalid token"
       ) {
         dispatch(setLoggedIn(false))
         dispatch(setAccessToken(""))

@@ -96,7 +96,7 @@ const Setting = () => {
               <Typography variant="subtitle2">Password</Typography>
             </Grid>
             <Grid item xs={4} md={4}>
-              <Typography>{setting.password}</Typography>
+              <Typography>XXXXXX</Typography>
             </Grid>
             <Grid item xs={4} md={4}>
               <Link href="#" onClick={() => setPasswordModalOpen(true)}>

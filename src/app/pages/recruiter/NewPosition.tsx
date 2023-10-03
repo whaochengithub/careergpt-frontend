@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
   Box,
   FormControl,
@@ -9,15 +9,33 @@ import {
 } from "@mui/material"
 import { BootstrapInput } from "../../components/common/BootstrapInput"
 import Select from "react-select"
+import useSetting from "../../../features/setting/useSetting"
 
-type Props = {}
+type Props = {
+  onChange: (position: object) => void
+}
 
-function NewPosition({}: Props) {
+function NewPosition({ onChange }: Props) {
   const [jobTitle, setJobTitle] = useState("")
   const [jobLocation, setJobLocation] = useState("")
-  const [jobType, setJobType] = useState("")
+  const [jobType, setJobType] = useState("Contract")
+  const [jobDescription, setJobDescription] = useState("")
+  const { setting } = useSetting()
 
-  const handleJobTypeChange = () => {}
+  useEffect(() => {
+    onChange({
+      postBy: setting.id,
+      title: jobTitle,
+      postTime: new Date().toLocaleDateString("en-US"),
+      jobType: jobType,
+      location: jobLocation,
+      description: jobDescription,
+    })
+  }, [onChange, setting, jobTitle, jobLocation, jobType, jobDescription])
+
+  const handleJobTypeChange = ({ value, label }) => {
+    setJobType(value)
+  }
 
   return (
     <Grid container spacing={4} mb={20}>
@@ -29,7 +47,7 @@ function NewPosition({}: Props) {
           <BootstrapInput
             id="position-job-title"
             value={jobTitle}
-            onChange={() => setJobTitle(e.target.value)}
+            onChange={(e) => setJobTitle(e.target.value)}
             sx={{ width: "100%" }}
           />
         </FormControl>
@@ -42,7 +60,7 @@ function NewPosition({}: Props) {
           <BootstrapInput
             id="position-job-location"
             value={jobLocation}
-            onChange={() => setJobLocation(e.target.value)}
+            onChange={(e) => setJobLocation(e.target.value)}
             sx={{ width: "100%" }}
           />
         </FormControl>
@@ -52,8 +70,11 @@ function NewPosition({}: Props) {
           <Typography variant="caption">Job Type</Typography>
           <Select
             id={"position-job-type"}
-            options={[{ value: "contract", label: "Contract" }]}
-            value={{ value: "contract", label: "Contract" }}
+            options={[
+              { value: "Contract", label: "Contract" },
+              { value: "Full Time", label: "Full Time" },
+            ]}
+            value={{ value: "Contract", label: "Contract" }}
             onChange={handleJobTypeChange}
           />
         </FormControl>
@@ -67,6 +88,7 @@ function NewPosition({}: Props) {
               borderRadius: "8px",
               borderColor: "#D0D5DD",
             }}
+            onChange={(e) => setJobDescription(e.target.value)}
             minRows={10}
           />
         </FormControl>
