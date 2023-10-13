@@ -7,6 +7,7 @@ import {
   Typography,
 } from "@mui/material"
 import React, { useState } from "react"
+import { resetPassword } from "../apis/resetPassword"
 import { BootstrapInput } from "../components/common/BootstrapInput"
 import { Button } from "../components/common/Button"
 
@@ -15,6 +16,17 @@ type Props = {}
 function ResetPassword({}: Props) {
   const [oldPassword, setOldPassword] = useState("")
   const [newPassword, setNewPassword] = useState("")
+
+  const urlParams = new URLSearchParams(window.location.search)
+  const token = urlParams.get("token")
+
+  const handleSubmit = () => {
+    resetPassword({
+      email: "luda.neu@gmail.com",
+      password: newPassword,
+      resetToken: token ?? "",
+    })
+  }
 
   return (
     <Box
@@ -52,7 +64,7 @@ function ResetPassword({}: Props) {
               onChange={(e) => setNewPassword(e.target.value)}
             />
           </FormControl>
-          <Button>Submit</Button>
+          <Button onClick={handleSubmit}>Submit</Button>
         </Stack>
       </Card>
     </Box>

@@ -4,6 +4,8 @@ import {
   FormControl,
   FormHelperText,
   Grid,
+  IconButton,
+  InputAdornment,
   InputLabel,
   Link as MUILink,
   Snackbar,
@@ -19,6 +21,7 @@ import { useAuth } from "../../features/authorization/useAuth"
 import { APIResponse } from "../utils/ajaxUtil"
 import { validateEmail } from "../utils/validation"
 import { getResetPasswordLink } from "../apis/resetPassword"
+import { Visibility, VisibilityOff } from "@mui/icons-material"
 
 const SignIn = () => {
   const [email, setEmail] = useState("")
@@ -28,6 +31,7 @@ const SignIn = () => {
   const [emailError, setEmailError] = useState(false)
   const [showNotification, setShowNotification] = useState(false)
   const [showError, setShowError] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const auth = useAuth()
 
   let navigate = useNavigate()
@@ -84,6 +88,12 @@ const SignIn = () => {
     setPassword(event.currentTarget.value)
   }
 
+  const handleClickShowPassword = () => setShowPassword((show) => !show)
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault()
+  }
+
   return (
     <Grid container>
       <Grid
@@ -105,6 +115,11 @@ const SignIn = () => {
             Log In
           </Typography>
           <Typography variant="subtitle2">CareerGPT</Typography>
+          {showError && (
+            <Alert severity="error" sx={{ width: "100%" }}>
+              The user name or password are incorrect.
+            </Alert>
+          )}
           <FormControl variant="standard" sx={{ width: "100%" }}>
             <InputLabel shrink htmlFor="siginin-email" required>
               Email
@@ -134,8 +149,21 @@ const SignIn = () => {
             <BootstrapInput
               id="siginin-password"
               value={password}
+              type={showPassword ? "text" : "password"}
               onChange={handlePasswordChange}
               sx={{ width: "100%" }}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
             />
           </FormControl>
           <Button
@@ -197,15 +225,6 @@ const SignIn = () => {
           <FormHelperText sx={{ color: "red" }}>Invalid Email</FormHelperText>
         )}
       </Modal>
-      <Snackbar
-        open={showError}
-        autoHideDuration={2000}
-        onClose={handleErrorClose}
-      >
-        <Alert severity="error" sx={{ width: "100%" }}>
-          The user name or password are incorrect.
-        </Alert>
-      </Snackbar>
       <Snackbar
         open={showNotification}
         autoHideDuration={2000}

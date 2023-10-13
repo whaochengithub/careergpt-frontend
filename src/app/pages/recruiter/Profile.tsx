@@ -521,7 +521,11 @@ const Profile = () => {
       >
         <NewPosition onChange={onPositionChange} />
       </Modal>
-      <Snackbar open={postSuccess} autoHideDuration={6000}>
+      <Snackbar
+        open={postSuccess}
+        autoHideDuration={3000}
+        onClose={() => setPostSuccess(false)}
+      >
         <Alert severity="success" sx={{ width: "100%" }}>
           Post Successfully!
         </Alert>

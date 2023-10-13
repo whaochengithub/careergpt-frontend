@@ -21,7 +21,7 @@ import { BootstrapInput } from "../components/common/BootstrapInput"
 import Nav from "../components/Nav"
 import { getSetting } from "../apis/setting"
 import useSetting from "../../features/setting/useSetting"
-import { resetPassword } from "../apis/resetPassword"
+import { resetPassword } from "../apis/account/resetPassword"
 
 const Setting = () => {
   const [creditModalOpen, setCreditModalOpen] = useState(false)
