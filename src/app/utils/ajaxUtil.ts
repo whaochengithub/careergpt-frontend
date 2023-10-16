@@ -121,6 +121,57 @@ export const getAPI = async (
     })
 }
 
+//config for delete request note that the method as changed to get this is very important
+const deleteConfig: Params = {
+  baseUrl: authEndpoint,
+  headers: {
+    "Access-Control-Allow-Origin": "*",
+    "Content-Type": "application/json",
+  },
+  method: "delete",
+}
+
+export const deleteAPI = async (
+  url: string,
+  data: any,
+  options?: any,
+): Promise<any> => {
+  return await axios({
+    ...deleteConfig,
+    url: `${deleteConfig.baseUrl}/${url}${data}`,
+    headers: options?.credential
+      ? {
+          ...postConfig.headers,
+          Authorization: `Bearer ${options?.access_token ?? getAccessToken()}`,
+        }
+      : {
+          ...postConfig.headers,
+        },
+  })
+    .then((response) => {
+      console.info(response)
+
+      return {
+        status: response.status,
+        data: response.data,
+      }
+    })
+    .catch((error) => {
+      console.warn(error)
+      if (
+        error.response?.data?.message === "Invalid/Expired Token!" ||
+        error.response?.data?.message === "invalid token"
+      ) {
+        dispatch(setLoggedIn(false))
+        dispatch(setAccessToken(""))
+      }
+      return {
+        status: error.status,
+        data: error.response,
+      }
+    })
+}
+
 //config for put request note that the method as changed to get this is very important
 const putConfig: Params = {
   baseUrl: authEndpoint,
