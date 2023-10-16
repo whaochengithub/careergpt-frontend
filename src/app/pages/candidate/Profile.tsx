@@ -10,7 +10,7 @@ import {
   Paper,
   Typography,
 } from "@mui/material"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import AppHeader from "../../components/AppHeader"
 import { Stack } from "@mui/system"
 import { Button } from "../../components/common/Button"
@@ -21,6 +21,7 @@ import { BootstrapInput } from "../../components/common/BootstrapInput"
 import Nav from "../../components/Nav"
 import Select from "react-select"
 import useSetting from "../../../features/setting/useSetting"
+import { getCandidateDetail } from "../../apis/candidate/candidateDetail"
 
 const Profile = () => {
   const [profileEditMode, setProfileEditMode] = useState(false)
@@ -30,6 +31,10 @@ const Profile = () => {
   const [aboutEditMode, setAboutEditMode] = useState(false)
   const [workExperienceEditMode, setWorkExperienceEditMode] = useState(false)
   const { getSetting, setting } = useSetting()
+
+  useEffect(() => {
+    getCandidateDetail().then()
+  }, [])
 
   return (
     <Box sx={{ flexDirection: "column", height: "100vh" }}>

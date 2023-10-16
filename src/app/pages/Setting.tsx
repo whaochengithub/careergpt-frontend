@@ -13,15 +13,55 @@ import {
   Stack,
   Typography,
 } from "@mui/material"
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import AppHeader from "../components/AppHeader"
 import { Modal } from "../components/common/Modal/Modal"
 import { Button } from "../components/common/Button"
 import { BootstrapInput } from "../components/common/BootstrapInput"
 import Nav from "../components/Nav"
-import { getSetting } from "../apis/setting"
 import useSetting from "../../features/setting/useSetting"
 import { resetPassword } from "../apis/account/resetPassword"
+import { useForm, Controller } from "react-hook-form"
+
+// Card Type Detection
+
+function detectCardType(cardNumber) {
+  const patterns = {
+    visa: /^4[0-9]{12}(?:[0-9]{3})?$/,
+    mastercard: /^5[1-5][0-9]{14}$/,
+    amex: /^3[47][0-9]{13}$/,
+    discover: /^6(?:011|5[0-9]{2})[0-9]{12}$/,
+  }
+
+  for (const cardType in patterns) {
+    if (patterns[cardType].test(cardNumber)) {
+      return cardType
+    }
+  }
+
+  return "Unknown"
+}
+
+// Luhn Algorithm
+function validateLuhnAlgorithm(cardNumber) {
+  let sum = 0
+  let isEven = false
+
+  for (let i = cardNumber.length - 1; i >= 0; i--) {
+    let digit = parseInt(cardNumber.charAt(i), 10)
+
+    if (isEven) {
+      digit *= 2
+      if (digit > 9) {
+        digit -= 9
+      }
+    }
+    sum += digit
+    isEven = !isEven
+  }
+  detectCardType(cardNumber)
+  return sum % 10 === 0
+}
 
 const Setting = () => {
   const [creditModalOpen, setCreditModalOpen] = useState(false)
@@ -32,6 +72,15 @@ const Setting = () => {
   const [newPassword, setNewPassword] = useState("")
 
   const { getSetting, setting } = useSetting()
+
+  const { control, handleSubmit, formState } = useForm({
+    defaultValues: {
+      ccNumber: "",
+      ccExpire: "",
+      ccCVV: "",
+    },
+  })
+  const onSubmit = (data: object) => console.log("dddd", data, formState)
 
   const handleCreditModalClose = () => {
     setCreditModalOpen(false)
@@ -135,7 +184,12 @@ const Setting = () => {
         onClose={handleCreditModalClose}
         width={600}
         actionButtons={[
-          <Button key="submit" variant="contained" shape={"square"}>
+          <Button
+            key="submit"
+            variant="contained"
+            shape={"square"}
+            onClick={handleSubmit(onSubmit)}
+          >
             Submit
           </Button>,
         ]}
@@ -192,29 +246,33 @@ const Setting = () => {
           >
             <Grid container sx={{ width: 300 }}>
               <Grid item xs={12} sm={12} md={12}>
-                <BootstrapInput
-                  fullWidth
-                  inputProps={{ style: { borderRadius: 0 } }}
-                  placeholder={"Card number"}
-                >
-                  123456789o0
-                </BootstrapInput>
+                <Controller
+                  name="ccNumber"
+                  control={control}
+                  rules={{
+                    minLength: 3,
+                  }}
+                  render={({ field }) => (
+                    <BootstrapInput
+                      fullWidth
+                      inputProps={{ style: { borderRadius: 0 } }}
+                      placeholder={"Card number"}
+                      {...field}
+                    />
+                  )}
+                />
               </Grid>
               <Grid item xs={6} sm={6} md={6}>
                 <BootstrapInput
                   inputProps={{ style: { borderRadius: 0 } }}
                   placeholder={"MM / YY"}
-                >
-                  12/24
-                </BootstrapInput>
+                />
               </Grid>
               <Grid item xs={6} sm={6} md={6}>
                 <BootstrapInput
                   inputProps={{ style: { borderRadius: 0 } }}
                   placeholder={"CVV"}
-                >
-                  234
-                </BootstrapInput>
+                />
               </Grid>
             </Grid>
           </RadioGroup>

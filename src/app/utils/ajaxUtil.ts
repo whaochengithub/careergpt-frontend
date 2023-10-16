@@ -87,7 +87,7 @@ export const getAPI = async (
 ): Promise<any> => {
   return await axios({
     ...getConfig,
-    url: `${getConfig.baseUrl}/${url}/${data}`,
+    url: `${getConfig.baseUrl}/${url}${data}`,
     headers: options?.credential
       ? {
           ...postConfig.headers,
