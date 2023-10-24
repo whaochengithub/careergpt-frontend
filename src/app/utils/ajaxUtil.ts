@@ -138,7 +138,8 @@ export const deleteAPI = async (
 ): Promise<any> => {
   return await axios({
     ...deleteConfig,
-    url: `${deleteConfig.baseUrl}/${url}${data}`,
+    url: `${deleteConfig.baseUrl}/${url}`,
+    data,
     headers: options?.credential
       ? {
           ...postConfig.headers,
