@@ -20,15 +20,25 @@ import { Chip } from "../../components/common/Chip"
 import { BootstrapInput } from "../../components/common/BootstrapInput"
 import Nav from "../../components/Nav"
 import Select from "react-select"
+import CreatableSelect from "react-select/creatable"
 import useSetting from "../../../features/setting/useSetting"
 import { getCandidateDetail } from "../../apis/candidate/candidateDetail"
-import { updateCandidate } from "../../apis/candidate/updateCandidate"
+import {
+  Candidate,
+  updateCandidate,
+} from "../../apis/candidate/updateCandidate"
 import { useSelector } from "react-redux"
 import { selectAccessToken } from "../../../features/authorization/authorizationSlice"
 import { addExperiences, Experience } from "../../apis/candidate/addExperiences"
 import _ from "lodash"
 import { updateExperiences } from "../../apis/candidate/updateExperiences"
 import { deleteExperiences } from "../../apis/candidate/deleteExperiences"
+import { Education } from "../../apis/candidate/addEducation"
+import { addEducations } from "../../apis/candidate/addEducations"
+import { deleteEducations } from "../../apis/candidate/deleteEducations"
+import { updateEducations } from "../../apis/candidate/updateEducations"
+
+const SKILLS = ["Front End", "Machine Learning", "Back End", "React"]
 
 const Profile = () => {
   const [profileEditMode, setProfileEditMode] = useState(false)
@@ -37,8 +47,9 @@ const Profile = () => {
   const [skillEditMode, setSkillEditMode] = useState(false)
   const [aboutEditMode, setAboutEditMode] = useState(false)
   const [workExperienceEditMode, setWorkExperienceEditMode] = useState(false)
-  const [candidateDetail, setCandidateDetail] = useState(null)
-  const [newCandidateDetail, setNewCandidateDetail] = useState(null)
+  const [candidateDetail, setCandidateDetail] = useState<Candidate | null>(null)
+  const [newCandidateDetail, setNewCandidateDetail] =
+    useState<Candidate | null>(null)
   const { getSetting, setting } = useSetting()
   const access_token = useSelector(selectAccessToken)
 
@@ -87,70 +98,77 @@ const Profile = () => {
     })
   }
 
-  const handleExperiencesSave = () => {
-    const oldExperiences = candidateDetail?.experiences
-    const newExperiences = newCandidateDetail?.experiences
+  const handleCandidateDetailUpdate =
+    (
+      selectData: (data: Candidate) => object[],
+      addData: (data: object[]) => Promise<Response>,
+      deleteData: (data: object[]) => Promise<Response>,
+      updateData: (data: object[]) => Promise<Response>,
+    ) =>
+    () => {
+      if (!candidateDetail || !newCandidateDetail) return
 
-    const addedExperiences = _.differenceWith(
-      newExperiences,
-      oldExperiences,
-      _.isEqual,
-    )
+      const oldData = selectData(candidateDetail)
+      const newData = selectData(newCandidateDetail)
 
-    const removedExperiences = _.differenceWith(
-      oldExperiences,
-      newExperiences,
-      _.isEqual,
-    )
+      const addedData = _.differenceWith(newData, oldData, _.isEqual)
 
-    const updatedExperiences = _.intersectionBy(
-      newExperiences,
-      oldExperiences,
-      "id",
-    )
+      const removedData = _.differenceWith(oldData, newData, _.isEqual)
 
-    // format startDate and end Date
-    _.forEach(addedExperiences, (experience) => {
-      experience.startDate = new Date(experience.startDate).toISOString()
-      experience.endDate = new Date(experience.endDate).toISOString()
-    })
-    _.forEach(removedExperiences, (experience) => {
-      experience.startDate = new Date(experience.startDate).toISOString()
-      experience.endDate = new Date(experience.endDate).toISOString()
-    })
-    _.forEach(updatedExperiences, (experience) => {
-      experience.startDate = new Date(experience.startDate).toISOString()
-      experience.endDate = new Date(experience.endDate).toISOString()
-    })
+      const updatedData = _.intersectionBy(newData, oldData, "id")
 
-    if (addExperiences.length > 0) {
-      addExperiences(addedExperiences).then((response) => {
-        if (response.data !== undefined) {
-          refreshCandidateDetail()
-        }
+      // format startDate and end Date
+      _.forEach(addedData, (experience) => {
+        experience.startDate = new Date(experience.startDate).toISOString()
+        experience.endDate = new Date(experience.endDate).toISOString()
       })
+      _.forEach(removedData, (experience) => {
+        experience.startDate = new Date(experience.startDate).toISOString()
+        experience.endDate = new Date(experience.endDate).toISOString()
+      })
+      _.forEach(updatedData, (experience) => {
+        experience.startDate = new Date(experience.startDate).toISOString()
+        experience.endDate = new Date(experience.endDate).toISOString()
+      })
+
+      if (removedData.length > 0) {
+        deleteData(removedData.map((data) => data.id)).then((response) => {
+          if (response.data !== undefined) {
+            refreshCandidateDetail()
+          }
+        })
+      }
+
+      if (addedData.length > 0) {
+        addData(addedData).then((response) => {
+          if (response.data !== undefined) {
+            refreshCandidateDetail()
+          }
+        })
+      }
+
+      if (updatedData.length > 0) {
+        updateData(updatedData).then((response) => {
+          if (response.data !== undefined) {
+            refreshCandidateDetail()
+          }
+        })
+      }
     }
 
-    if (updatedExperiences.length > 0) {
-      updateExperiences(updatedExperiences).then((response) => {
-        if (response.data !== undefined) {
-          refreshCandidateDetail()
-        }
-      })
-    }
+  const handleExperiencesSave = handleCandidateDetailUpdate(
+    (candidate: Candidate) => candidate.experiences,
+    addExperiences,
+    deleteExperiences,
+    updateExperiences,
+  )
 
-    if (deleteExperiences.length > 0) {
-      deleteExperiences(
-        removedExperiences.map((experience) => experience.id),
-      ).then((response) => {
-        if (response.data !== undefined) {
-          refreshCandidateDetail()
-        }
-      })
-    }
-  }
-
-  const handleEducationsSave = () => {}
+  const handleEducationsSave = handleCandidateDetailUpdate(
+    (candidate: Candidate) => candidate.educations,
+    addEducations,
+    deleteEducations,
+    updateEducations,
+  )
 
   return (
     <Box sx={{ flexDirection: "column", height: "100vh" }}>
@@ -521,94 +539,140 @@ const Profile = () => {
                   {educationEditMode ? (
                     <>
                       <Stack divider={<Divider variant="middle" />}>
-                        <Grid container padding={3} rowGap={2}>
-                          <Grid item xs={12} sm={12} md={12}>
-                            <Typography variant="subtitle1" fontWeight={"bold"}>
-                              School
-                            </Typography>
-                            <BootstrapInput
-                              fullWidth
-                              value={"New York University"}
-                            />
-                          </Grid>
-                          <Grid item xs={12} sm={12} md={12}>
-                            <Typography variant="subtitle2" fontWeight={"bold"}>
-                              Degree
-                            </Typography>
-                            <Select
-                              options={[
-                                { label: "Master", value: "Master" },
-                                { label: "Bachelor", value: "Bachelor" },
-                              ]}
-                              value={{ label: "Master", value: "Master" }}
-                            />
-                          </Grid>
-                          <Grid item xs={12} sm={12} md={12}>
-                            <Typography variant="subtitle2" fontWeight={"bold"}>
-                              Field of Study
-                            </Typography>
-                            <BootstrapInput
-                              fullWidth
-                              value={"Computer Science"}
-                            />
-                          </Grid>
-                          <Grid item xs={6} sm={6} md={6}>
-                            <Typography variant="subtitle2" fontWeight={"bold"}>
-                              Start
-                            </Typography>
-                            <BootstrapInput>2018</BootstrapInput>
-                          </Grid>
-                          <Grid item xs={6} sm={6} md={6}>
-                            <Typography variant="subtitle2" fontWeight={"bold"}>
-                              End
-                            </Typography>
-                            <BootstrapInput>2020</BootstrapInput>
-                          </Grid>
-                        </Grid>
-                        <Grid container padding={3} rowGap={2}>
-                          <Grid item xs={12} sm={12} md={12}>
-                            <Typography variant="subtitle1" fontWeight={"bold"}>
-                              School
-                            </Typography>
-                            <BootstrapInput
-                              fullWidth
-                              value={"New York University"}
-                            />
-                          </Grid>
-                          <Grid item xs={12} sm={12} md={12}>
-                            <Typography variant="subtitle2" fontWeight={"bold"}>
-                              Degree
-                            </Typography>
-                            <Select
-                              options={[
-                                { label: "Master", value: "Master" },
-                                { label: "Bachelor", value: "Bachelor" },
-                              ]}
-                              value={{ label: "Master", value: "Master" }}
-                            />
-                          </Grid>
-                          <Grid item xs={12} sm={12} md={12}>
-                            <Typography variant="subtitle2" fontWeight={"bold"}>
-                              Field of Study
-                            </Typography>
-                            <BootstrapInput
-                              fullWidth
-                              value={"Computer Science"}
-                            />
-                          </Grid>
-                          <Grid item xs={6} sm={6} md={6}>
-                            <Typography variant="subtitle2" fontWeight={"bold"}>
-                              Start
-                            </Typography>
-                            <BootstrapInput>2018</BootstrapInput>
-                          </Grid>
-                          <Grid item xs={6} sm={6} md={6}>
-                            <Typography variant="subtitle2" fontWeight={"bold"}>
-                              End
-                            </Typography>
-                            <BootstrapInput>2020</BootstrapInput>
-                          </Grid>
-                        </Grid>
+                        {newCandidateDetail?.educations?.map(
+                          (education, index) => (
+                            <Grid
+                              container
+                              padding={3}
+                              rowGap={2}
+                              sx={{ position: "relative" }}
+                            >
+                              <IconButton
+                                sx={{ position: "absolute", right: 20 }}
+                              >
+                                <DeleteOutline
+                                  color="error"
+                                  onClick={() => {
+                                    const newEducations = [
+                                      ...newCandidateDetail.educations,
+                                    ]
+                                    newEducations.splice(index, 1)
+                                    setNewCandidateDetail({
+                                      ...newCandidateDetail,
+                                      educations: newEducations,
+                                    })
+                                  }}
+                                />
+                              </IconButton>
+                              <Grid item xs={12} sm={12} md={12}>
+                                <Typography
+                                  variant="subtitle1"
+                                  fontWeight={"bold"}
+                                >
+                                  School
+                                </Typography>
+                                <BootstrapInput
+                                  fullWidth
+                                  onChange={(e) => {
+                                    const newEducations: Education[] = [
+                                      ...newCandidateDetail.educations,
+                                    ]
+                                    newEducations[index].school = e.target.value
+                                    setNewCandidateDetail({
+                                      ...newCandidateDetail,
+                                      educations: newEducations,
+                                    })
+                                  }}
+                                  value={education.school}
+                                />
+                              </Grid>
+                              <Grid item xs={12} sm={12} md={12}>
+                                <Typography
+                                  variant="subtitle2"
+                                  fontWeight={"bold"}
+                                >
+                                  Degree
+                                </Typography>
+                                <Select
+                                  options={[
+                                    { label: "Master", value: "Master" },
+                                    { label: "Bachelor", value: "Bachelor" },
+                                  ]}
+                                  value={{
+                                    label: education.degree,
+                                    value: education.degree,
+                                  }}
+                                  onChange={({ label, value }) => {
+                                    const newEducations: Education[] = [
+                                      ...newCandidateDetail.educations,
+                                    ]
+                                    newEducations[index].degree = value
+                                    setNewCandidateDetail({
+                                      ...newCandidateDetail,
+                                      educations: newEducations,
+                                    })
+                                  }}
+                                />
+                              </Grid>
+                              <Grid item xs={12} sm={12} md={12}>
+                                <Typography
+                                  variant="subtitle2"
+                                  fontWeight={"bold"}
+                                >
+                                  Field of Study
+                                </Typography>
+                                <BootstrapInput
+                                  fullWidth
+                                  value={education.field}
+                                />
+                              </Grid>
+                              <Grid item xs={6} sm={6} md={6}>
+                                <Typography
+                                  variant="subtitle2"
+                                  fontWeight={"bold"}
+                                >
+                                  Start
+                                </Typography>
+                                <BootstrapInput
+                                  onChange={(e) => {
+                                    const newEducations: Education[] = [
+                                      ...newCandidateDetail.educations,
+                                    ]
+                                    newEducations[index].startDate =
+                                      e.target.value
+                                    setNewCandidateDetail({
+                                      ...newCandidateDetail,
+                                      educations: newEducations,
+                                    })
+                                  }}
+                                  value={education.startDate}
+                                />
+                              </Grid>
+                              <Grid item xs={6} sm={6} md={6}>
+                                <Typography
+                                  variant="subtitle2"
+                                  fontWeight={"bold"}
+                                >
+                                  End
+                                </Typography>
+                                <BootstrapInput
+                                  onChange={(e) => {
+                                    const newEducations: Education[] = [
+                                      ...newCandidateDetail.educations,
+                                    ]
+                                    newEducations[index].endDate =
+                                      e.target.value
+                                    setNewCandidateDetail({
+                                      ...newCandidateDetail,
+                                      educations: newEducations,
+                                    })
+                                  }}
+                                  value={education.endDate}
+                                />
+                              </Grid>
+                            </Grid>
+                          ),
+                        )}
                       </Stack>
                       <Box
                         sx={{
@@ -622,6 +686,22 @@ const Profile = () => {
                           variant="contained"
                           sx={{ width: 100, justifySelf: "center" }}
                           shape={"square"}
+                          onClick={() => {
+                            setNewCandidateDetail({
+                              ...newCandidateDetail,
+                              educations: [
+                                ...newCandidateDetail.educations,
+                                {
+                                  id: newCandidateDetail?.educations.length + 1,
+                                  candidateId: newCandidateDetail.id,
+                                  degree: "",
+                                  school: "",
+                                  startDate: "",
+                                  endDate: "",
+                                },
+                              ],
+                            })
+                          }}
                         >
                           Add New
                         </Button>
@@ -631,7 +711,10 @@ const Profile = () => {
                           variant="contained"
                           sx={{ m: 1, width: 50, float: "right" }}
                           shape={"square"}
-                          onClick={() => setEducationEditMode(false)}
+                          onClick={() => {
+                            handleEducationsSave()
+                            setEducationEditMode(false)
+                          }}
                         >
                           Save
                         </Button>
@@ -647,60 +730,45 @@ const Profile = () => {
                     </>
                   ) : (
                     <Grid container m={3} rowGap={2}>
-                      <Grid
-                        item
-                        xs={5}
-                        sm={5}
-                        md={5}
-                        lg={5}
-                        alignItems="center"
-                        justifyContent={"center"}
-                      >
-                        <Typography variant="subtitle1">
-                          XXX University
+                      {candidateDetail?.educations?.length > 0 ? (
+                        candidateDetail?.educations.map((education) => (
+                          <Box key={education.id}>
+                            <Grid
+                              item
+                              xs={5}
+                              sm={5}
+                              md={5}
+                              lg={5}
+                              alignItems="center"
+                              justifyContent={"center"}
+                            >
+                              <Typography variant="subtitle1">
+                                {education.school}
+                              </Typography>
+                              <Typography variant="subtitle2">
+                                {education.degree}
+                              </Typography>
+                            </Grid>
+                            <Grid
+                              textAlign={"center"}
+                              item
+                              xs={7}
+                              sm={7}
+                              md={7}
+                              lg={7}
+                              paddingLeft={3}
+                            >
+                              <Typography variant="subtitle2">
+                                {education.startDate} - {education.endDate}
+                              </Typography>
+                            </Grid>
+                          </Box>
+                        ))
+                      ) : (
+                        <Typography variant="subtitle2" textAlign={"center"}>
+                          No Educations
                         </Typography>
-                        <Typography variant="subtitle2">
-                          Master in Computer Science
-                        </Typography>
-                      </Grid>
-                      <Grid
-                        textAlign={"center"}
-                        item
-                        xs={7}
-                        sm={7}
-                        md={7}
-                        lg={7}
-                        paddingLeft={3}
-                      >
-                        <Typography variant="subtitle2">2016 - 2020</Typography>
-                      </Grid>
-                      <Grid
-                        item
-                        xs={5}
-                        sm={5}
-                        md={5}
-                        lg={5}
-                        alignItems="center"
-                        justifyContent={"center"}
-                      >
-                        <Typography variant="subtitle1">
-                          XXX University
-                        </Typography>
-                        <Typography variant="subtitle2">
-                          Bachelor in Computer Science
-                        </Typography>
-                      </Grid>
-                      <Grid
-                        textAlign={"center"}
-                        item
-                        xs={7}
-                        sm={7}
-                        md={7}
-                        lg={7}
-                        paddingLeft={3}
-                      >
-                        <Typography variant="subtitle2">2016 - 2020</Typography>
-                      </Grid>
+                      )}
                     </Grid>
                   )}
                 </Stack>
@@ -715,24 +783,41 @@ const Profile = () => {
                     justifyContent={"space-between"}
                   >
                     <Typography variant="subtitle1">Skills</Typography>
-                    <IconButton>
-                      <EditOutlined />
-                    </IconButton>
                   </Stack>
-                  <Stack
-                    direction={"row"}
-                    alignItems={"center"}
-                    useFlexGap
-                    flexWrap="wrap"
-                  >
-                    <Chip sx={{ m: 2 }} label="Front End" onDelete={() => {}} />
-                    <Chip
-                      sx={{ m: 2 }}
-                      label="Machine Learning"
-                      onDelete={() => {}}
-                    />
-                    <Chip sx={{ m: 2 }} label="C++" onDelete={() => {}} />
-                  </Stack>
+                  <CreatableSelect
+                    isMulti
+                    isClearable
+                    menuPortalTarget={document.body}
+                    styles={{
+                      container: (base) => ({ ...base, margin: 20 }),
+                      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                    }}
+                    options={SKILLS.map((skill) => ({
+                      label: skill,
+                      value: skill,
+                    }))}
+                    value={
+                      candidateDetail?.skills
+                        ? candidateDetail?.skills?.split(",").map((skill) => {
+                            return {
+                              label: skill,
+                              value: skill,
+                            }
+                          })
+                        : null
+                    }
+                    onChange={(skills) => {
+                      const newCandidate = { ...candidateDetail }
+                      newCandidate.skills = skills
+                        .map((skill) => skill.value)
+                        .join(",")
+                      updateCandidate(newCandidate).then((response) => {
+                        if (response.data !== undefined) {
+                          refreshCandidateDetail()
+                        }
+                      })
+                    }}
+                  />
                 </Stack>
               </Card>
             </Box>
@@ -1057,6 +1142,7 @@ const Profile = () => {
                       {candidateDetail?.experiences?.length > 0 ? (
                         candidateDetail.experiences.map((experience) => (
                           <Stack
+                            key={experience.id}
                             direction={"row"}
                             alignItems={"center"}
                             paddingY={3}

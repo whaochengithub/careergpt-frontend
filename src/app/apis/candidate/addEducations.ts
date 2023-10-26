@@ -8,8 +8,8 @@ export type Education = {
   endDate: string
 }
 
-export const addEducation = async (education: Education) => {
-  return postAPI("candidate/education", education, {
+export const addEducations = async (educations: Education[]) => {
+  return postAPI("candidate/educations", educations, {
     credential: true,
   })
 }
